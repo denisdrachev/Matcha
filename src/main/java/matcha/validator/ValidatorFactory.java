@@ -1,0 +1,33 @@
+package matcha.validator;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
+import matcha.properties.SchemaProperties;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class ValidatorFactory {
+
+    private SchemaProperties properties;
+    @Getter
+    private Map<String, JsonSchemaValidator> validatorMap = new HashMap();
+
+    public ValidatorFactory(SchemaProperties properties) {
+        this.properties = properties;
+        properties.getSchemasList().forEach(s -> {
+            try {
+                validatorMap.put(s.split("[.]")[0],
+                        new JsonSchemaValidator(properties.getFolder().concat(File.separator).concat(s))
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        validatorMap.forEach((s, jsonSchemaValidator) -> System.out.println("key: " + s + "; value: " + jsonSchemaValidator));
+    }
+}
