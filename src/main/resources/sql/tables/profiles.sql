@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     biography VARCHAR(1000) NOT NULL,
     tags VARCHAR(255) NOT NULL,
     images VARCHAR(255) NULL,
+    time DATETIME,
     avatar INT,
     FOREIGN KEY (avatar)  REFERENCES images (id)
 ) ENGINE InnoDB;

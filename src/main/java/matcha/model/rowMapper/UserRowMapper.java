@@ -20,7 +20,7 @@ public class UserRowMapper implements RowMapper<User> {
         user.setEmail(rs.getString("email"));
         user.setLogin(rs.getString("login"));
         user.setPassword(rs.getString("password"));
-        user.setProfileId(rs.getInt("profileId"));
+        user.setProfileId(rs.getInt("profileId") == 0 ? null : rs.getInt("profileId"));
         return user;
     }
 }

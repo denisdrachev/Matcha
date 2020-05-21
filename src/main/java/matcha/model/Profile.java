@@ -3,6 +3,8 @@ package matcha.model;
 import lombok.*;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -18,5 +20,6 @@ public class Profile implements Serializable {
     private String biography;
     private String tags;
     private String images;
+    private Date time;
     private int avatar;
 }

@@ -61,7 +61,9 @@ public class EntityManipulator {
     public Optional<Integer> updateUserById(User user) {
         log.info("Update user: ".concat(user.toString()));
         int update = jdbcTemplate.update(Update.updateUserById,
-                user.getActivationCode(), user.isActive(), user.getId());
+                user.getLogin(), user.getPassword(), user.getActivationCode(),
+                user.getFname(), user.getLname(), user.getEmail(),
+                user.isActive(), user.isBlocked(), user.getProfileId() ,user.getId());
         log.info("Update user result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }
@@ -98,7 +100,7 @@ public class EntityManipulator {
         log.info("Create profile: ".concat(profile.toString()));
         int update = jdbcTemplate.update(Insert.insertProfile,
                 profile.getAge(), profile.getGender(), profile.getPreference(),
-                profile.getBiography(), profile.getTags(), profile.getImages(), profile.getAvatar());
+                profile.getBiography(), profile.getTags(), profile.getTime(), profile.getImages(), profile.getAvatar());
         log.info("Create profile result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }
@@ -107,7 +109,7 @@ public class EntityManipulator {
         log.info("Update profile: ".concat(profile.toString()));
         int update = jdbcTemplate.update(Update.updateProfileById,
                 profile.getAge(), profile.getGender(), profile.getPreference(), profile.getBiography(),
-                profile.getTags(), profile.getImages(), profile.getAvatar(), profile.getId());
+                profile.getTags(), profile.getImages(), profile.getTime(), profile.getAvatar(), profile.getId());
         log.info("Update profile result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }

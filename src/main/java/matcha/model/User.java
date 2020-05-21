@@ -20,5 +20,5 @@ public class User implements Serializable {
     private String email;
     private boolean active;
     private boolean blocked;
-    private int profileId;
+    private Integer profileId = null;
 }

@@ -16,6 +16,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 @Configuration
@@ -33,7 +34,7 @@ public class SpringJdbcConfig {
 
         jdbcTemplate.update(Insert.insertImage, "asdqw");
         jdbcTemplate.update(Insert.insertUser, "loginnnn", "password", null, "Artur", "Kamnev", "fermer@gmail.com", 1, 0, null);
-        jdbcTemplate.update(Insert.insertProfile, 22, 1, 0, "Simple fermer", "fermer", null, 1);
+        jdbcTemplate.update(Insert.insertProfile, 22, 1, 0, "Simple fermer", "fermer", null, new Date(), 1);
         jdbcTemplate.update(Insert.insertLocation, 1, "aaaa");
         jdbcTemplate.update(Insert.insertRaiting, 7, 1);
         jdbcTemplate.update(Insert.insertBlacklist, 1, 1);

@@ -22,7 +22,7 @@ public class Sender {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(userEmail);
         email.setSubject(subject);
-        email.setText(message.concat("\r\n<a href=http://localhost:8888").concat(confirmationUrl).concat(">Активация</a>"));
+        email.setText(message.concat("\r\n<a href=http://localhost:8888").concat(confirmationUrl).concat(" target=\"_blank\">Активация</a>"));
         log.info("Sending mail: ".concat(email.toString()));
         mailSender.send(email);
         log.info("Message sent.");
