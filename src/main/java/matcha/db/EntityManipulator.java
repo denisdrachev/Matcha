@@ -39,7 +39,7 @@ public class EntityManipulator {
     public Optional<User> getUserByActivationCode(String activationCode) {
         User user = jdbcTemplate.queryForObject(Select.selectUserByActivationCode,
                 new Object[] { activationCode }, new UserRowMapper());
-        System.err.println(user);
+        log.info("Get user by Activation Code: ".concat(activationCode).concat(" User: ") + user);
         return Optional.ofNullable(user);
     }
 
@@ -49,11 +49,18 @@ public class EntityManipulator {
         return Optional.ofNullable(user);
     }
 
+    public Optional<User> getUserByLogin(String login) {
+        User user = jdbcTemplate.queryForObject(Select.selectUserByLogin,
+                  new UserRowMapper(), login);
+        log.info("Get user by login: ".concat(login).concat(" User: ") + user);
+        return Optional.ofNullable(user);
+    }
+
     public Optional<Integer> createUser(User user) {
         log.info("Create user: ".concat(user.toString()));
         int update = jdbcTemplate.update(Insert.insertUser,
-                user.getLogin(), user.getPassword(), user.getActivationCode(),
-                user.getFname(), user.getLname(), user.getEmail(), user.isActive(), user.isBlocked(), null);
+                user.getLogin(), user.getPassword(), user.getActivationCode(), user.getFname(),
+                user.getLname(), user.getEmail(), user.isActive(), user.isBlocked(), user.getSalt(), null);
         log.info("Create user result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }

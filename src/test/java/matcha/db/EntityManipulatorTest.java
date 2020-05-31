@@ -9,8 +9,8 @@ class EntityManipulatorTest {
 
     @Test
     void createUser() {
-        User user = new User(0,"111","222","333",
-                "444","555","666",false,false,0);
+        User user = new User(0,"111","222".getBytes(),"333",
+                "444","555","666",false,false, "aaad".getBytes(),0);
 
     }
 }

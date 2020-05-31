@@ -13,12 +13,16 @@ public class User implements Serializable {
 
     private int id;
     private String login;
-    private String password;
+    @ToString.Exclude
+    private byte[] password;
+    @ToString.Exclude
     private String activationCode;
     private String fname;
     private String lname;
     private String email;
     private boolean active;
     private boolean blocked;
+    @ToString.Exclude
+    private byte[] salt;
     private Integer profileId = null;
 }

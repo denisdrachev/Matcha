@@ -10,7 +10,6 @@ public class UserRowMapper implements RowMapper<User> {
     @Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User();
-
         user.setId(rs.getInt("id"));
         user.setFname(rs.getString("fname"));
         user.setLname(rs.getString("lname"));
@@ -19,7 +18,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setBlocked(rs.getBoolean("blocked"));
         user.setEmail(rs.getString("email"));
         user.setLogin(rs.getString("login"));
-        user.setPassword(rs.getString("password"));
+        user.setPassword(rs.getBytes("password"));
+        user.setSalt(rs.getBytes("salt"));
         user.setProfileId(rs.getInt("profileId") == 0 ? null : rs.getInt("profileId"));
         return user;
     }

@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum Gateways {
 
     REGISTRATION("register"),
+    LOGIN("login"),
     PROFILE_UPDATE("profile-update");
 
     private final String uri;

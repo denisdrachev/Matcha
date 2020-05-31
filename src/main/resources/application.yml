@@ -25,3 +25,4 @@ schema:
   schemas-list:
     - registry-schema.json
     - profile-update-schema.json
+    - login-schema.json

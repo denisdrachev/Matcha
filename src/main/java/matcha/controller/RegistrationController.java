@@ -23,10 +23,7 @@ public class RegistrationController {
     public String confirmRegistration
             (WebRequest request, Model model, @RequestParam("token") String token) {
 
-        System.err.println(token);
         Locale locale = request.getLocale();
-        System.err.println(locale);
-
         boolean verificationToken = entityActions.getVerificationToken(token);
 
         if (verificationToken == false) {
@@ -34,8 +31,6 @@ public class RegistrationController {
             model.addAttribute("message", message);
             return "redirect:/badUser.html?lang=" + locale.getLanguage();
         }
-
-
         return "redirect:?lang=" + request.getLocale().getLanguage();
     }
 }

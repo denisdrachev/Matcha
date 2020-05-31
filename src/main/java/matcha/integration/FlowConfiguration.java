@@ -1,8 +1,11 @@
 package matcha.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.converter.Converter;
+import matcha.converter.Utils;
 import matcha.db.EntityActions;
 import matcha.model.User;
 import matcha.properties.Channels;
@@ -19,6 +22,7 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.http.dsl.Http;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 @Configuration
@@ -37,16 +41,28 @@ public class FlowConfiguration {
                 .requestMapping(m -> m.methods(HttpMethod.POST))
                 .requestPayloadType(String.class))
                 .log(Gateways.REGISTRATION.getUri())
-                .transform(o -> validateBySchema(Schemas.REGISTRY_SCHEMA.getName(), o.toString()))
-                .filter(o -> o instanceof User,
+                .transform(o -> validateUserBySchema(Schemas.REGISTRY_SCHEMA.getName(), o.toString()))
+                .filter(o -> !(o instanceof ResponseError),
                         f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
-                .transform(o -> {((User) o).setActivationCode(UUID.randomUUID().toString()); return o;})
                 .transform(entityActions::userRegistry)
                 .get();
     }
 
     @Bean
-    public IntegrationFlow schemeValidationErrorFlow() {
+    public IntegrationFlow loginFlow() {
+        return IntegrationFlows.from(Http.inboundGateway(Gateways.LOGIN.getUri())
+                .requestMapping(m -> m.methods(HttpMethod.POST))
+                .requestPayloadType(String.class))
+                .log(Gateways.LOGIN.getUri())
+                .transform(o -> loginPrepare(Schemas.LOGIN_SCHEMA.getName(), o.toString()))
+                .filter(o -> !(o instanceof ResponseError),
+                        f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
+//                .transform(this::loginPrepare)
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow schemeValidationErrorChannel() {
         return IntegrationFlows.from(Channels.SCHEME_VALIDATION_ERROR.getChannelName())
                 .log(Channels.SCHEME_VALIDATION_ERROR.getChannelName())
                 .transform(Object::toString)
@@ -88,4 +104,50 @@ public class FlowConfiguration {
         }
     }
 
+    private Object validateUserBySchema(String schemaName, String json) {
+        Object o = validateOnlyBySchema(schemaName, json);
+        if (o instanceof Boolean) {
+            try {
+                User user = Converter.convertToUser(json);
+                final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+                Utils.initRegistryUser(user, node.get("password").asText());
+                o = user;
+            } catch (Exception e) {
+                log.error("Error. Error mapping json: " + json);
+            }
+        }
+        return o;
+    }
+
+    private Object validateOnlyBySchema(String schemaName, String json) {
+        try {
+            validatorFactory.getValidatorMap().get(schemaName).validate(json);
+            return true;
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder()
+                    .append("Failed schema validate. Schema: ")
+                    .append(schemaName)
+                    .append(" json: ")
+                    .append(json)
+                    .append(" Message: ")
+                    .append(e.getMessage());
+            String result = sb.toString();
+            log.warn(result);
+            return new ResponseError("error", result);
+        }
+    }
+
+    private Object loginPrepare(String schemaName, String json) {
+        Object o = validateOnlyBySchema(schemaName, json);
+        if (o instanceof Boolean) {
+            try {
+                final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+                //проверка location. Если там ip, то найти его расположение, иначе - ничего не делать
+                o = entityActions.userLogin(node.get("login").asText(), node.get("password").asText(), node.get("location"));
+            } catch (Exception e) {
+                log.error("Error. Error mapping json: " + json);
+            }
+        }
+        return o;
+    }
 }
