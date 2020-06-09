@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS profiles (
     images VARCHAR(255) NULL,
     avatar INT,
     FOREIGN KEY (avatar)  REFERENCES images (id)
-) ENGINE InnoDB;
+) ;

@@ -3,4 +3,4 @@ CREATE TABLE IF NOT EXISTS locations (
     profile INT,
     location VARCHAR(255) NOT NULL,
     FOREIGN KEY (profile)  REFERENCES profiles (id)
-) ENGINE InnoDB;
+) ;

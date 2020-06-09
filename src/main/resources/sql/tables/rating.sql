@@ -3,4 +3,4 @@ CREATE TABLE IF NOT EXISTS rating (
     rating INT,
     profile INT,
     FOREIGN KEY (profile)  REFERENCES profiles (id)
-) ENGINE InnoDB;
+) ;

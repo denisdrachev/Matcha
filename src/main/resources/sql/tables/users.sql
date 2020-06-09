@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS users (
     salt VARBINARY(255) NOT NULL,
     profileId INT NULL,
     FOREIGN KEY (profileId)  REFERENCES profiles (id)
-) ENGINE InnoDB;
+) ;

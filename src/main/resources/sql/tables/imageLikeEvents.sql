@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS imageLikeEvents (
     FOREIGN KEY (image)  REFERENCES images (id),
     FOREIGN KEY (who)  REFERENCES profiles (id),
     FOREIGN KEY (whom)  REFERENCES profiles (id)
-) ENGINE InnoDB;
+) ;
