@@ -20,6 +20,5 @@ public class Profile implements Serializable {
     private String biography;
     private String tags;
     private String images;
-    private Date time;
     private int avatar;
 }

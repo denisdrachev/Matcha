@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     active BOOLEAN NOT NULL,
     blocked BOOLEAN NOT NULL,
+    time DATETIME,
     salt VARBINARY(255) NOT NULL,
     profileId INT NULL,
     FOREIGN KEY (profileId)  REFERENCES profiles (id)

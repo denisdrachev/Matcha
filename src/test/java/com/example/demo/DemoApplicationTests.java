@@ -16,6 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -92,6 +94,13 @@ public class DemoApplicationTests {
 //                new byte[] { -56, -123, -109, -109, -106, 64, -26,
 //                        -106, -103, -109, -124, 90 },
 //                byteArrray2);
+    }
+
+    @Test
+    public void fff() {
+        System.err.println(Calendar.getInstance().getTime());
+
+        Date date = Calendar.getInstance().getTime();
     }
 
 }

@@ -22,9 +22,6 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.http.dsl.Http;
 
-import java.util.Arrays;
-import java.util.UUID;
-
 @Configuration
 @AllArgsConstructor
 @EnableIntegration
@@ -41,7 +38,7 @@ public class FlowConfiguration {
                 .requestMapping(m -> m.methods(HttpMethod.POST))
                 .requestPayloadType(String.class))
                 .log(Gateways.REGISTRATION.getUri())
-                .transform(o -> validateUserBySchema(Schemas.REGISTRY_SCHEMA.getName(), o.toString()))
+                .transform(o -> validateRegistrationUserBySchema(Schemas.REGISTRY_SCHEMA.getName(), o.toString()))
                 .filter(o -> !(o instanceof ResponseError),
                         f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
                 .transform(entityActions::userRegistry)
@@ -86,25 +83,7 @@ public class FlowConfiguration {
 //                        return Channels.NO_ACTION_CHANNEL.getChannelName();
 //                })
 
-    private Object validateBySchema(String schemaName, String json) {
-        try {
-            validatorFactory.getValidatorMap().get(schemaName).validate(json);
-            return Converter.convertToUser(json);
-        } catch (Exception e) {
-            StringBuilder sb = new StringBuilder()
-                    .append("Failed schema validate. Schema: ")
-                    .append(schemaName)
-                    .append(" json: ")
-                    .append(json)
-                    .append(" Message: ")
-                    .append(e.getMessage());
-            String result = sb.toString();
-            log.warn(result);
-            return new ResponseError("error", result);
-        }
-    }
-
-    private Object validateUserBySchema(String schemaName, String json) {
+    private Object validateRegistrationUserBySchema(String schemaName, String json) {
         Object o = validateOnlyBySchema(schemaName, json);
         if (o instanceof Boolean) {
             try {
@@ -118,6 +97,23 @@ public class FlowConfiguration {
         }
         return o;
     }
+
+//    private Object validateRegistrationUserBySchema(String schemaName, String json) {
+//        Object o = validateOnlyBySchema(schemaName, json);
+//        if (o instanceof Boolean) {
+//            try {
+//                User user = Converter.convertToUser(json);
+////                entityActions.
+//
+//                final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+//                Utils.initRegistryUser(user, node.get("password").asText());
+//                o = user;
+//            } catch (Exception e) {
+//                log.error("Error. Error mapping json: " + json);
+//            }
+//        }
+//        return o;
+//    }
 
     private Object validateOnlyBySchema(String schemaName, String json) {
         try {

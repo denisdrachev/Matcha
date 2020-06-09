@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Optional;
 
 //TODO можно логирование переделать под AOP
@@ -38,9 +39,12 @@ public class EntityManipulator {
 
     public Optional<User> getUserByActivationCode(String activationCode) {
         User user = jdbcTemplate.queryForObject(Select.selectUserByActivationCode,
-                new Object[] { activationCode }, new UserRowMapper());
+                new Object[]{activationCode}, new UserRowMapper());
         log.info("Get user by Activation Code: ".concat(activationCode).concat(" User: ") + user);
-        return Optional.ofNullable(user);
+        Optional<User> userOptional = Optional.ofNullable(user);
+        if (userOptional.isPresent())
+            user.setTime(Calendar.getInstance().getTime());
+        return userOptional;
     }
 
     public Optional<User> getUserById(int userId) {
@@ -51,7 +55,7 @@ public class EntityManipulator {
 
     public Optional<User> getUserByLogin(String login) {
         User user = jdbcTemplate.queryForObject(Select.selectUserByLogin,
-                  new UserRowMapper(), login);
+                new UserRowMapper(), login);
         log.info("Get user by login: ".concat(login).concat(" User: ") + user);
         return Optional.ofNullable(user);
     }
@@ -60,7 +64,7 @@ public class EntityManipulator {
         log.info("Create user: ".concat(user.toString()));
         int update = jdbcTemplate.update(Insert.insertUser,
                 user.getLogin(), user.getPassword(), user.getActivationCode(), user.getFname(),
-                user.getLname(), user.getEmail(), user.isActive(), user.isBlocked(), user.getSalt(), null);
+                user.getLname(), user.getEmail(), user.isActive(), user.isBlocked(), user.getTime(), user.getSalt(), null);
         log.info("Create user result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }
@@ -68,9 +72,9 @@ public class EntityManipulator {
     public Optional<Integer> updateUserById(User user) {
         log.info("Update user: ".concat(user.toString()));
         int update = jdbcTemplate.update(Update.updateUserById,
-                user.getLogin(), user.getPassword(), user.getActivationCode(),
+                user.getLogin(), user.getActivationCode(),
                 user.getFname(), user.getLname(), user.getEmail(),
-                user.isActive(), user.isBlocked(), user.getProfileId() ,user.getId());
+                user.isActive(), user.isBlocked(), user.getTime(), user.getProfileId(), user.getId());
         log.info("Update user result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }
@@ -107,7 +111,7 @@ public class EntityManipulator {
         log.info("Create profile: ".concat(profile.toString()));
         int update = jdbcTemplate.update(Insert.insertProfile,
                 profile.getAge(), profile.getGender(), profile.getPreference(),
-                profile.getBiography(), profile.getTags(), profile.getTime(), profile.getImages(), profile.getAvatar());
+                profile.getBiography(), profile.getTags(), profile.getImages(), profile.getAvatar());
         log.info("Create profile result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }
@@ -116,7 +120,7 @@ public class EntityManipulator {
         log.info("Update profile: ".concat(profile.toString()));
         int update = jdbcTemplate.update(Update.updateProfileById,
                 profile.getAge(), profile.getGender(), profile.getPreference(), profile.getBiography(),
-                profile.getTags(), profile.getImages(), profile.getTime(), profile.getAvatar(), profile.getId());
+                profile.getTags(), profile.getImages(), profile.getAvatar(), profile.getId());
         log.info("Update profile result: ".concat(String.valueOf(update)));
         return Optional.of(update);
     }

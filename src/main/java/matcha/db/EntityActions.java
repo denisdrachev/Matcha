@@ -10,6 +10,7 @@ import matcha.response.ResponseOk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,6 +54,35 @@ public class EntityActions {
         return new ResponseOk("ok", "CREATED", user.getLogin());
     }
 
+//    public Object userUpdate(User user) {
+//        Optional<Integer> userExist = entityManipulator.getUserCountByLogin(user.getLogin());
+//        if (userExist.isEmpty() || userExist.get() != 0) {
+//            StringBuilder sb = new StringBuilder()
+//                    .append("userRegistry. User exist: ");
+//            log.info(sb.toString().concat(user.toString()));
+//            sb.append(user.getLogin());
+//            return new ResponseError("error", sb.toString());
+//        }
+//        Optional<Integer> userCreated = entityManipulator.createUser(user);
+//        if (userCreated.isEmpty() || userCreated.get() != 1) {
+//            StringBuilder sb = new StringBuilder()
+//                    .append("userRegistry. Error create user: ");
+//            log.error(sb.toString().concat(user.toString()));
+//            sb.append(user.getLogin());
+//            return new ResponseError("error", sb.toString());
+//        }
+//        boolean b = mailSender.sendRegistrationMail(user.getEmail(), user.getActivationCode());
+//        if (!b) {
+//            Optional<Integer> userCountByLogin = entityManipulator.getUserCountByLogin(user.getLogin());
+//            if (userCountByLogin.isPresent() && userCountByLogin.get() == 1) {
+//                Optional<Integer> integer = entityManipulator.dropUserByLogin(user.getLogin());
+//                if (integer.isEmpty() || integer.get() != 1)
+//                    return new ResponseError("error", "NO NAME ERROR!");
+//            }
+//        }
+//        return new ResponseOk("ok", "CREATED", user.getLogin());
+//    }
+
     public boolean getVerificationToken(String uuid) {
         Optional<Integer> userCountByActivationCode = entityManipulator.getUserCountByActivationCode(uuid);
         if (userCountByActivationCode.isEmpty() || userCountByActivationCode.get() != 1)
@@ -77,6 +107,7 @@ public class EntityActions {
             if (user.isActive() && !user.isBlocked()) {
                 if (Utils.checkPassword(password, user.getSalt(), user.getPassword())) {
                     user.setActivationCode(UUID.randomUUID().toString());
+                    user.setTime(Calendar.getInstance().getTime());
                     //сохранить location в базу
                     Optional<Integer> integer = entityManipulator.updateUserById(user);
                     if (integer.isPresent() && integer.get() == 1) {
