@@ -5,6 +5,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class Profile implements Serializable {
     private int gender;
     private int preference;
     private String biography;
-    private String tags;
-    private String images;
+    private List<String> tags;
+    private List<String> images;
     private int avatar;
 }

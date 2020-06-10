@@ -12,10 +12,19 @@
       "fname": "first name",
       "lname": "last name",
       "email": "email@gmail.com",
-      "location": {
-        "x": 5,
-        "y": 10
-      }
+      "age": 55,
+      "gender": 1,
+      "preference": 0,
+      "biography": "my name is bobby",
+      "tags": [
+        "aaa",
+        "bbb"
+      ],
+      "images": [
+        "image1",
+        "image2"
+      ],
+      "avatar": 2
     }
   ],
   "required": [
@@ -23,7 +32,14 @@
     "password",
     "fname",
     "lname",
-    "email"
+    "email",
+    "age",
+    "gender",
+    "preference",
+    "biography",
+    "tags",
+    "images",
+    "avatar"
   ],
   "additionalProperties": true,
   "properties": {
@@ -32,8 +48,8 @@
       "type": "string",
       "title": "The login schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": "",
       "minLength": 1,
+      "default": "",
       "examples": [
         "login"
       ]
@@ -43,8 +59,8 @@
       "type": "string",
       "title": "The password schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": "",
       "minLength": 1,
+      "default": "",
       "examples": [
         "password"
       ]
@@ -54,8 +70,8 @@
       "type": "string",
       "title": "The fname schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": "",
       "minLength": 1,
+      "default": "",
       "examples": [
         "first name"
       ]
@@ -65,8 +81,8 @@
       "type": "string",
       "title": "The lname schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": "",
       "minLength": 1,
+      "default": "",
       "examples": [
         "last name"
       ]
@@ -76,52 +92,121 @@
       "type": "string",
       "title": "The email schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": "",
-      "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
       "minLength": 1,
+      "default": "",
       "examples": [
         "email@gmail.com"
       ]
     },
-    "location": {
-      "$id": "#/properties/location",
-      "type": "object",
-      "title": "The location schema",
+    "age": {
+      "$id": "#/properties/age",
+      "type": "integer",
+      "title": "The age schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": {},
+      "default": 0,
       "examples": [
-        {
-          "x": 5,
-          "y": 10
-        }
+        55
+      ]
+    },
+    "gender": {
+      "$id": "#/properties/gender",
+      "type": "integer",
+      "title": "The gender schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        1
+      ]
+    },
+    "preference": {
+      "$id": "#/properties/preference",
+      "type": "integer",
+      "title": "The preference schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        0
+      ]
+    },
+    "biography": {
+      "$id": "#/properties/biography",
+      "type": "string",
+      "title": "The biography schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "my name is bobby"
+      ]
+    },
+    "tags": {
+      "$id": "#/properties/tags",
+      "type": "array",
+      "title": "The tags schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": [],
+      "examples": [
+        [
+          "aaa",
+          "bbb"
+        ]
       ],
-      "required": [
-        "x",
-        "y"
-      ],
-      "additionalProperties": true,
-      "properties": {
-        "x": {
-          "$id": "#/properties/location/properties/x",
-          "type": "integer",
-          "title": "The x schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": 0,
-          "examples": [
-            5
-          ]
-        },
-        "y": {
-          "$id": "#/properties/location/properties/y",
-          "type": "integer",
-          "title": "The y schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": 0,
-          "examples": [
-            10
-          ]
-        }
+      "additionalItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "$id": "#/properties/tags/items/anyOf/0",
+            "type": "string",
+            "title": "The first anyOf schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "aaa",
+              "bbb"
+            ]
+          }
+        ],
+        "$id": "#/properties/tags/items"
       }
+    },
+    "images": {
+      "$id": "#/properties/images",
+      "type": "array",
+      "title": "The images schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": [],
+      "examples": [
+        [
+          "image1",
+          "image2"
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "$id": "#/properties/images/items/anyOf/0",
+            "type": "string",
+            "title": "The first anyOf schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "image1",
+              "image2"
+            ]
+          }
+        ],
+        "$id": "#/properties/images/items"
+      }
+    },
+    "avatar": {
+      "$id": "#/properties/avatar",
+      "type": "integer",
+      "title": "The avatar schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": -1,
+      "examples": [
+        2
+      ]
     }
   }
 }

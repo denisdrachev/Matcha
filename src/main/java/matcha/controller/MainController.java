@@ -35,7 +35,7 @@ public class MainController {
     @GetMapping("/")
     public String confirmRegistration(WebRequest request, Model model) {
         System.err.println(uris.size());
-        model.addAttribute("name", uris.stream().collect(Collectors.joining("")));
+        model.addAttribute("name", String.join("", uris));
         return "greeting";
     }
 }

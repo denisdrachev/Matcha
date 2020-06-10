@@ -9,12 +9,19 @@ import matcha.db.crud.Update;
 import matcha.model.Image;
 import matcha.model.Profile;
 import matcha.model.User;
+import matcha.model.rowMapper.ProfileRowMapper;
 import matcha.model.rowMapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -102,27 +109,49 @@ public class EntityManipulator {
     }
 
     public Optional<Profile> getProfileById(int profileId) {
-        Profile profile = jdbcTemplate.queryForObject(Select.selectProfileById, Profile.class, profileId);
+        Profile profile = jdbcTemplate.queryForObject(Select.selectProfileById,
+                new ProfileRowMapper(), profileId);
         log.info("Get profile by id: ".concat(String.valueOf(profileId)).concat(" Profile: ") + profile);
         return Optional.ofNullable(profile);
     }
 
     public Optional<Integer> createProfile(Profile profile) {
         log.info("Create profile: ".concat(profile.toString()));
-        int update = jdbcTemplate.update(Insert.insertProfile,
-                profile.getAge(), profile.getGender(), profile.getPreference(),
-                profile.getBiography(), profile.getTags(), profile.getImages(), profile.getAvatar());
-        log.info("Create profile result: ".concat(String.valueOf(update)));
-        return Optional.of(update);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int update = jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(Insert.insertProfile, new String[]{"id"});
+                ps.setInt(1, profile.getAge());
+                ps.setInt(2, profile.getGender());
+                ps.setInt(3, profile.getPreference());
+                ps.setString(4, profile.getBiography());
+                ps.setString(5, String.join(",", profile.getTags()));
+                ps.setString(6, String.join(",", profile.getImages()));
+                ps.setInt(7, profile.getAvatar());
+                return ps;
+            }
+        }, keyHolder);
+        log.info("Create profile result: ".concat(String.valueOf(keyHolder.getKey())));
+        if (update != 1)
+            return Optional.empty();
+        return Optional.of(keyHolder.getKey().intValue());
     }
 
     public Optional<Integer> updateProfileById(Profile profile) {
         log.info("Update profile: ".concat(profile.toString()));
         int update = jdbcTemplate.update(Update.updateProfileById,
                 profile.getAge(), profile.getGender(), profile.getPreference(), profile.getBiography(),
-                profile.getTags(), profile.getImages(), profile.getAvatar(), profile.getId());
+                String.join(",", profile.getTags()), String.join(",", profile.getImages()), profile.getAvatar(), profile.getId());
         log.info("Update profile result: ".concat(String.valueOf(update)));
         return Optional.of(update);
+    }
+
+    public Optional<Integer> dropProfileById(int id) {
+        log.info("Drop user by id: ".concat(String.valueOf(id)));
+        int drop = jdbcTemplate.update(Drop.deleteProfileById, id);
+        log.info("Drop user by login result: ".concat(String.valueOf(drop)));
+        return Optional.of(drop);
     }
 
     /**************************************************************************************************************/

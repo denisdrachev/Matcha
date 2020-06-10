@@ -16,6 +16,8 @@ public class Drop {
     public static String deleteUserById = "DELETE from users WHERE id = ?;";
     public static String deleteUserByLogin = "DELETE from users WHERE login = ?;";
 
+    public static String deleteProfileById = "DELETE from profiles WHERE id = ?;";
+
     public static List<String> getAll() {
         return List.of(rating, locations, imageLikeEvents, blacklist, users, profiles, images);
     }

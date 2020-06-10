@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import matcha.converter.Converter;
 import matcha.converter.Utils;
 import matcha.db.EntityActions;
+import matcha.db.EntityManipulator;
 import matcha.model.User;
 import matcha.properties.Channels;
 import matcha.properties.Gateways;
@@ -52,6 +53,19 @@ public class FlowConfiguration {
                 .requestPayloadType(String.class))
                 .log(Gateways.LOGIN.getUri())
                 .transform(o -> loginPrepare(Schemas.LOGIN_SCHEMA.getName(), o.toString()))
+                .filter(o -> !(o instanceof ResponseError),
+                        f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
+//                .transform(this::loginPrepare)
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow profileUpdateFlow() {
+        return IntegrationFlows.from(Http.inboundGateway(Gateways.PROFILE_UPDATE.getUri())
+                .requestMapping(m -> m.methods(HttpMethod.POST))
+                .requestPayloadType(String.class))
+                .log(Gateways.PROFILE_UPDATE.getUri())
+                .transform(o -> profilePrepare(Schemas.PROFILE_UPDATE_SCHEMA.getName(), o.toString()))
                 .filter(o -> !(o instanceof ResponseError),
                         f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
 //                .transform(this::loginPrepare)
@@ -140,6 +154,22 @@ public class FlowConfiguration {
                 final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
                 //проверка location. Если там ip, то найти его расположение, иначе - ничего не делать
                 o = entityActions.userLogin(node.get("login").asText(), node.get("password").asText(), node.get("location"));
+            } catch (Exception e) {
+                log.error("Error. Error mapping json: " + json);
+            }
+        }
+        return o;
+    }
+
+    private Object profilePrepare(String schemaName, String json) {
+        Object o = validateOnlyBySchema(schemaName, json);
+        if (o instanceof Boolean) {
+            try {
+                User user = Converter.convertToUser(json);
+                o = entityActions.profileSave(json);
+//                final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+//                Utils.initRegistryUser(user, node.get("password").asText());
+//                o = user;
             } catch (Exception e) {
                 log.error("Error. Error mapping json: " + json);
             }
