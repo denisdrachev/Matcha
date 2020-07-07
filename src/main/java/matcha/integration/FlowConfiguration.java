@@ -37,6 +37,7 @@ public class FlowConfiguration {
     public IntegrationFlow myFlow() {
         return IntegrationFlows.from(Http.inboundGateway(Gateways.REGISTRATION.getUri())
                 .requestMapping(m -> m.methods(HttpMethod.POST))
+                .crossOrigin(cors -> cors.origin("*"))
                 .requestPayloadType(String.class))
                 .log(Gateways.REGISTRATION.getUri())
                 .transform(o -> validateRegistrationUserBySchema(Schemas.REGISTRY_SCHEMA.getName(), o.toString()))
@@ -50,6 +51,7 @@ public class FlowConfiguration {
     public IntegrationFlow loginFlow() {
         return IntegrationFlows.from(Http.inboundGateway(Gateways.LOGIN.getUri())
                 .requestMapping(m -> m.methods(HttpMethod.POST))
+                .crossOrigin(cors -> cors.origin("*"))
                 .requestPayloadType(String.class))
                 .log(Gateways.LOGIN.getUri())
                 .transform(o -> loginPrepare(Schemas.LOGIN_SCHEMA.getName(), o.toString()))
@@ -63,6 +65,7 @@ public class FlowConfiguration {
     public IntegrationFlow profileUpdateFlow() {
         return IntegrationFlows.from(Http.inboundGateway(Gateways.PROFILE_UPDATE.getUri())
                 .requestMapping(m -> m.methods(HttpMethod.POST))
+                .crossOrigin(cors -> cors.origin("*"))
                 .requestPayloadType(String.class))
                 .log(Gateways.PROFILE_UPDATE.getUri())
                 .transform(o -> profilePrepare(Schemas.PROFILE_UPDATE_SCHEMA.getName(), o.toString()))
