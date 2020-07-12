@@ -8,12 +8,14 @@ import matcha.converter.Converter;
 import matcha.converter.Utils;
 import matcha.db.EntityActions;
 import matcha.db.EntityManipulator;
+import matcha.model.ImageElem;
+import matcha.model.Profile;
 import matcha.model.User;
-import matcha.properties.Channels;
-import matcha.properties.Gateways;
-import matcha.properties.Schemas;
+import matcha.properties.*;
 import matcha.response.ResponseError;
+import matcha.response.ResponseOk;
 import matcha.validator.ValidatorFactory;
+import org.everit.json.schema.ValidationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +24,7 @@ import org.springframework.integration.config.EnableIntegrationManagement;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.http.dsl.Http;
+
 
 @Configuration
 @AllArgsConstructor
@@ -32,6 +35,7 @@ public class FlowConfiguration {
 
     private ValidatorFactory validatorFactory;
     private EntityActions entityActions;
+    private ConfigProperties configProperties;
 
     @Bean
     public IntegrationFlow myFlow() {
@@ -71,7 +75,19 @@ public class FlowConfiguration {
                 .transform(o -> profilePrepare(Schemas.PROFILE_UPDATE_SCHEMA.getName(), o.toString()))
                 .filter(o -> !(o instanceof ResponseError),
                         f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
-//                .transform(this::loginPrepare)
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow profileGetFlow() {
+        return IntegrationFlows.from(Http.inboundGateway(Gateways.PROFILE_GET.getUri())
+                .requestMapping(m -> m.methods(HttpMethod.POST))
+                .crossOrigin(cors -> cors.origin("*"))
+                .requestPayloadType(String.class))
+                .log(Gateways.PROFILE_GET.getUri())
+                .transform(o -> profileGetPrepare(Schemas.PROFILE_GET_SCHEMA.getName(), o.toString()))
+                .filter(o -> !(o instanceof ResponseError),
+                        f -> f.discardChannel(Channels.SCHEME_VALIDATION_ERROR.getChannelName()))
                 .get();
     }
 
@@ -107,6 +123,7 @@ public class FlowConfiguration {
                 User user = Converter.convertToUser(json);
                 final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
                 Utils.initRegistryUser(user, node.get("password").asText());
+                user.setActive(configProperties.isUsersDefaultActive());
                 o = user;
             } catch (Exception e) {
                 log.error("Error. Error mapping json: " + json);
@@ -136,17 +153,26 @@ public class FlowConfiguration {
         try {
             validatorFactory.getValidatorMap().get(schemaName).validate(json);
             return true;
-        } catch (Exception e) {
+        } catch (ValidationException e) {
+            String clientMessage;
+            if (e.getCausingExceptions().size() != 0) {
+                clientMessage = Utils.clearValidateMessage(e.getCausingExceptions());
+            } else {
+                if (e.getMessage().matches(StringConstants.validationDelimiter))
+                    clientMessage = e.getMessage().split(StringConstants.validationDelimiter)[1];
+                else
+                    clientMessage = e.getMessage();
+            }
             StringBuilder sb = new StringBuilder()
                     .append("Failed schema validate. Schema: ")
                     .append(schemaName)
                     .append(" json: ")
                     .append(json)
                     .append(" Message: ")
-                    .append(e.getMessage());
+                    .append(clientMessage);
             String result = sb.toString();
             log.warn(result);
-            return new ResponseError("error", result);
+            return new ResponseError("error", clientMessage);
         }
     }
 
@@ -169,12 +195,47 @@ public class FlowConfiguration {
         if (o instanceof Boolean) {
             try {
                 User user = Converter.convertToUser(json);
-                o = entityActions.profileSave(json);
-//                final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
-//                Utils.initRegistryUser(user, node.get("password").asText());
-//                o = user;
+                Profile profile = Converter.convertToProfile(json);
+                if (profile.getAvatar() < 0 && profile.getImages() != null && profile.getImages().size() > 0
+                        || profile.getAvatar() >= 0 && profile.getImages() == null
+                        || profile.getAvatar() >= 0 && profile.getImages() != null && profile.getImages().size() == 0) {
+                    log.warn("profilePrepare. Error avatar value [{}]", profile);
+                    return new ResponseError("error", "Ошибка. Не выбран аватар");
+                }
+
+                if (profile.getImages() != null && (profile.getAvatar() >= profile.getImages().size())) {
+                    log.warn("profilePrepare. Error avatar value out of index images [{}]", profile);
+                    return new ResponseError("error", "Ошибка. Указано не существующее значение аватара");
+                }
+                Object o1 = entityActions.userUpdate(user);
+
+
+                if (o1 instanceof ResponseError)
+                    return o1;
+                profile.setId(user.getProfileId());
+
+                o = entityActions.profileSave(profile);
+
+                if (!(o instanceof ResponseError)) {
+                    o = new ResponseOk("ok", user.getActivationCode(), user.getLogin());
+                }
             } catch (Exception e) {
-                log.error("Error. Error mapping json: " + json);
+                log.error("Error. Error mapping json: [{}] [{}]", json, e.getMessage());
+            }
+        }
+        return o;
+    }
+
+    private Object profileGetPrepare(String schemaName, String json) {
+        Object o = validateOnlyBySchema(schemaName, json);
+        if (o instanceof Boolean) {
+            try {
+
+                User user = Converter.convertToUser(json);
+                o = entityActions.profileGet(user);
+
+            } catch (Exception e) {
+                log.error("Error. Error profileGetPrepare: [{}] [{}]", json, e.getMessage());
             }
         }
         return o;

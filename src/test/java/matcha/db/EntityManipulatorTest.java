@@ -12,8 +12,13 @@ class EntityManipulatorTest {
 
     @Test
     void createUser() {
-        User user = new User(0,"111","222".getBytes(),"333",
+        User user = new User(0,"111.PNG","222".getBytes(),"333",
                 "444","555","666",false,false, new Date(),"aaad".getBytes(),0);
+
+    }
+
+    @Test
+    void updateProfileById() {
 
     }
 }

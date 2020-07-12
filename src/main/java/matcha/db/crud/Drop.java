@@ -18,6 +18,8 @@ public class Drop {
 
     public static String deleteProfileById = "DELETE from profiles WHERE id = ?;";
 
+    public static String deleteImageById = "DELETE from images WHERE id = ?;";
+
     public static List<String> getAll() {
         return List.of(rating, locations, imageLikeEvents, blacklist, users, profiles, images);
     }

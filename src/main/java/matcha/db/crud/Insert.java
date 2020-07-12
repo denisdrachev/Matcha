@@ -2,7 +2,7 @@ package matcha.db.crud;
 
 public class Insert {
 
-    public static String insertImage = "INSERT INTO images (img) VALUES (?)";
+    public static String insertImage = "INSERT INTO images (index, src) VALUES (?, ?)";
     public static String insertLocation = "INSERT INTO locations (profile, location) VALUES (?, ?)";
     public static String insertRaiting = "INSERT INTO rating (rating, profile) VALUES (?, ?)";
     public static String insertBlacklist = "INSERT INTO blacklist (who, whom) VALUES (?, ?)";

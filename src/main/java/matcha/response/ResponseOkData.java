@@ -1,23 +1,19 @@
-package matcha.model;
+package matcha.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import matcha.converter.Converter;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageElem {
+@Setter
+@Getter
+public class ResponseOkData {
 
-    private int id;
-    private int index;
-    private String src;
-
-    public ImageElem(int index, String src) {
-        this.index = index;
-        this.src = src;
-    }
+    private String type;
+    private String data;
 
     @Override
     public String toString() {

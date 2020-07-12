@@ -1,5 +1,6 @@
 package matcha.model.rowMapper;
 
+import matcha.converter.Converter;
 import matcha.model.Profile;
 import matcha.model.User;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,8 +20,13 @@ public class ProfileRowMapper implements RowMapper<Profile> {
         profile.setBiography(rs.getString("biography"));
         profile.setGender(rs.getInt("gender"));
         profile.setPreference(rs.getInt("preference"));
-        profile.setImages(Arrays.asList(rs.getString("images").split(",")));
-        profile.setTags(Arrays.asList(rs.getString("tags").split(",")));
+
+        if (rs.getString("images") != null)
+            profile.setImagesIds(Arrays.asList(rs.getString("images").split(",")));
+
+        if (rs.getString("tags") != null)
+            profile.setTags(Arrays.asList(rs.getString("tags").split(",")));
+
         return profile;
     }
 }

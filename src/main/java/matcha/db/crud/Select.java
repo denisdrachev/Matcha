@@ -2,7 +2,7 @@ package matcha.db.crud;
 
 public class Select {
 
-    public static String selectImage = "SELECT id, img FROM images";
+    public static String selectImage = "SELECT id, index, src FROM images";
     public static String selectLocation = "SELECT * FROM locations";
     public static String selectRaiting = "SELECT * FROM rating";
     public static String selectBlacklist = "SELECT * FROM blacklist";
@@ -18,6 +18,8 @@ public class Select {
     public static String selectProfilesCountById = "SELECT COUNT(*) FROM profiles WHERE id = ?";
     public static String selectUsersCountByLogin = "SELECT COUNT(*) FROM users WHERE login = ?";
     public static String selectUsersCountByActivationCode = "SELECT COUNT(*) FROM users WHERE activationCode = ?";
+    public static String selectUsersCountByLoginAndActivationCode = "SELECT COUNT(*) FROM users WHERE login = ? AND activationCode = ?";
+    public static String selectUserAndProfileByActivationCode = "SELECT * FROM users u INNER JOIN profiles p ON u.profileId = p.id WHERE activationCode = ?";
 
     public static String selectImageById = "SELECT * FROM images WHERE id = ? LIMIT 1";
     public static String selectLocationById = "SELECT * FROM locations WHERE id = ? LIMIT 1";

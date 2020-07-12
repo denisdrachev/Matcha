@@ -3,28 +3,24 @@ package com.example.demo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.primitives.Bytes;
 import lombok.SneakyThrows;
+import matcha.properties.ConfigProperties;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-
-import static org.junit.Assert.assertArrayEquals;
 
 @SpringBootTest
 //@ContextConfiguration
 //@RunWith(SpringRunner.class)
 public class DemoApplicationTests {
+
+//    @Autowired
+//    ConfigProperties configProperties;
 
 //	@Autowired
 //	JdbcTemplate jdbcTemplate;
@@ -102,5 +98,10 @@ public class DemoApplicationTests {
 
         Date date = Calendar.getInstance().getTime();
     }
+
+//    @Test
+//    public void configurationPropertyTest() {
+//        System.err.println(configurationProperty);
+//    }
 
 }

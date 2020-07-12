@@ -1,8 +1,7 @@
 package matcha.validator;
 
 import lombok.Getter;
-import lombok.SneakyThrows;
-import matcha.properties.SchemaProperties;
+import matcha.properties.ConfigProperties;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -13,11 +12,11 @@ import java.util.Map;
 @Service
 public class ValidatorFactory {
 
-    private SchemaProperties properties;
+    private ConfigProperties properties;
     @Getter
     private Map<String, JsonSchemaValidator> validatorMap = new HashMap();
 
-    public ValidatorFactory(SchemaProperties properties) {
+    public ValidatorFactory(ConfigProperties properties) {
         this.properties = properties;
         properties.getSchemasList().forEach(s -> {
             try {

@@ -7,6 +7,7 @@
   "default": {},
   "examples": [
     {
+      "activationCode": "activation_code",
       "login": "login",
       "password": "password",
       "fname": "first name",
@@ -21,13 +22,20 @@
         "bbb"
       ],
       "images": [
-        "image1",
-        "image2"
+        {
+          "index": 0,
+          "src": "uwyeihfuiwue"
+        },
+        {
+          "index": 1,
+          "src": "uwyeihfu2iwue"
+        }
       ],
-      "avatar": 2
+      "avatar": 1
     }
   ],
   "required": [
+    "activationCode",
     "login",
     "password",
     "fname",
@@ -43,12 +51,21 @@
   ],
   "additionalProperties": true,
   "properties": {
+    "activationCode": {
+      "$id": "#/properties/activationCode",
+      "type": "string",
+      "title": "The activationCode schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "activation_code"
+      ]
+    },
     "login": {
       "$id": "#/properties/login",
       "type": "string",
       "title": "The login schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "login"
@@ -59,7 +76,6 @@
       "type": "string",
       "title": "The password schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "password"
@@ -70,7 +86,6 @@
       "type": "string",
       "title": "The fname schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "first name"
@@ -81,7 +96,6 @@
       "type": "string",
       "title": "The lname schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "last name"
@@ -92,7 +106,6 @@
       "type": "string",
       "title": "The email schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "email@gmail.com"
@@ -176,8 +189,14 @@
       "default": [],
       "examples": [
         [
-          "image1",
-          "image2"
+          {
+            "index": 0,
+            "src": "uwyeihfuiwue"
+          },
+          {
+            "index": 1,
+            "src": "uwyeihfu2iwue"
+          }
         ]
       ],
       "additionalItems": true,
@@ -185,14 +204,43 @@
         "anyOf": [
           {
             "$id": "#/properties/images/items/anyOf/0",
-            "type": "string",
+            "type": "object",
             "title": "The first anyOf schema",
             "description": "An explanation about the purpose of this instance.",
-            "default": "",
+            "default": {},
             "examples": [
-              "image1",
-              "image2"
-            ]
+              {
+                "index": 0,
+                "src": "uwyeihfuiwue"
+              }
+            ],
+            "required": [
+              "index",
+              "src"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "index": {
+                "$id": "#/properties/images/items/anyOf/0/properties/index",
+                "type": "integer",
+                "title": "The index schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": 0,
+                "examples": [
+                  0
+                ]
+              },
+              "src": {
+                "$id": "#/properties/images/items/anyOf/0/properties/src",
+                "type": "string",
+                "title": "The src schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "uwyeihfuiwue"
+                ]
+              }
+            }
           }
         ],
         "$id": "#/properties/images/items"
@@ -203,9 +251,9 @@
       "type": "integer",
       "title": "The avatar schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": -1,
+      "default": 0,
       "examples": [
-        2
+        1
       ]
     }
   }

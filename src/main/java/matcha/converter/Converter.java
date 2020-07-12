@@ -1,15 +1,18 @@
 package matcha.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import matcha.model.ImageElem;
 import matcha.model.OnlyAction;
 import matcha.model.Profile;
 import matcha.model.User;
 import matcha.response.ResponseError;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -45,6 +48,20 @@ public class Converter {
         Profile object = null;
         try {
             object = mapper.readValue(json, Profile.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error convertToProfile. ".concat(e.getMessage()));
+        }
+        return object;
+    }
+
+    public static List<ImageElem> convertToImages(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        List<ImageElem> object = null;
+        try {
+            object = mapper.readValue(json, new TypeReference<List<ImageElem>>() { });
+//            object = mapper.readValue(json, List.class);
+
         } catch (JsonProcessingException e) {
             log.error("Error convertToProfile. ".concat(e.getMessage()));
         }

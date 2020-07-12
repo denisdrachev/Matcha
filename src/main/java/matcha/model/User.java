@@ -1,6 +1,7 @@
 package matcha.model;
 
 import lombok.*;
+import matcha.converter.Converter;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -28,4 +29,5 @@ public class User implements Serializable {
     @ToString.Exclude
     private byte[] salt;
     private Integer profileId = null;
+
 }

@@ -2,13 +2,22 @@ package matcha.converter;
 
 import lombok.SneakyThrows;
 import matcha.model.User;
+import matcha.properties.StringConstants;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.everit.json.schema.ValidationException;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Utils {
@@ -49,5 +58,24 @@ public class Utils {
         user.setSalt(Utils.getSalt());
         user.setPassword(Utils.getPrepearPassword(password, user.getSalt()));
         return user;
+    }
+
+    public static String clearValidateMessage(List<ValidationException> exceptions) {
+        String collect = exceptions.stream().map(e -> e.getMessage().split(StringConstants.validationDelimiter)[1]).collect(Collectors.joining(","));
+        return collect;
+    }
+
+    public static String saveImageBase64ToFile(String encodedString) throws IOException {
+
+        int length = 10;
+        boolean useLetters = true;
+        boolean useNumbers = true;
+        String generatedString = RandomStringUtils.random(length, useLetters, useNumbers);
+        System.out.println(generatedString);
+
+        String outputFileName = "images\\".concat(generatedString);
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
+        FileUtils.writeByteArrayToFile(new File(outputFileName), decodedBytes);
+        return outputFileName;
     }
 }

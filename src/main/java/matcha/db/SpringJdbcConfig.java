@@ -4,6 +4,7 @@ import matcha.db.crud.Drop;
 import matcha.db.crud.Insert;
 import matcha.db.crud.Select;
 import matcha.model.Image;
+import matcha.model.ImageElem;
 import matcha.model.Profile;
 import matcha.properties.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class SpringJdbcConfig {
 
         Properties.getAllTablesPath().stream().forEach(s -> createTableBySql(s));
 
-        jdbcTemplate.update(Insert.insertImage, "ABCD");
+        jdbcTemplate.update(Insert.insertImage, 0, "ABCD");
         jdbcTemplate.update(Insert.insertUser, "loginnnn", "password".getBytes(), null, "Artur", "Kamnev", "fermer@gmail.com", 1, 0, new Date(), "salt_test".getBytes(), null);
         jdbcTemplate.update(Insert.insertProfile, 22, 1, 0, "Simple fermer", "fermer", null,  1);
         jdbcTemplate.update(Insert.insertLocation, 1, "aaaa");
@@ -40,7 +41,7 @@ public class SpringJdbcConfig {
         jdbcTemplate.update(Insert.insertBlacklist, 1, 1);
         jdbcTemplate.update(Insert.insertImageLikeEvent, 1, 1, 1, 1);
 
-        jdbcTemplate.query(Select.selectImage, new BeanPropertyRowMapper(Image.class)).forEach(System.out::println);
+        jdbcTemplate.query(Select.selectImage, new BeanPropertyRowMapper(ImageElem.class)).forEach(System.out::println);
         jdbcTemplate.query(Select.selectProfile, new BeanPropertyRowMapper(Profile.class)).forEach(System.out::println);
     }
 
