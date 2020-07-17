@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ImageRowMapper implements RowMapper<ImageElem> {
+
     @Override
     public ImageElem mapRow(ResultSet rs, int rowNum) throws SQLException {
         ImageElem imageElem = new ImageElem();

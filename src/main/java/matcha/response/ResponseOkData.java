@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
 import matcha.model.MyObject;
+import org.json.JSONObject;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,10 +16,18 @@ import matcha.model.MyObject;
 public class ResponseOkData implements MyObject {
 
     private String type;
-    private String data;
+    private JSONObject data;
 
     @Override
     public String toString() {
-        return Converter.objectToJson(this).get();
+        return "{" +
+                "type:'" + type + '\'' +
+                ", data:" + data +
+                '}';
     }
+
+    //    @Override
+//    public String toString() {
+//        return Converter.objectToJson(this).get();
+//    }
 }

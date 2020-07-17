@@ -1,9 +1,12 @@
 package matcha.converter;
 
-import com.google.common.collect.Lists;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import matcha.model.ImageElem;
 import matcha.model.OnlyAction;
 import matcha.model.User;
+import matcha.model.UserAndProfile;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -69,5 +72,34 @@ class ConverterTest {
 
         System.err.println(user.getPassword());
         System.err.println(u.getPassword());
+    }
+
+    @Test
+    void testObjectToJson() throws JSONException, JsonProcessingException {
+
+        UserAndProfile userAndProfile = new UserAndProfile();
+        userAndProfile.setLogin("login!");
+        userAndProfile.setLname("lname!");
+        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject2 = new JSONObject();
+        jsonObject.put("string", "value");
+        jsonObject.put("integer", 199);
+        System.err.println(jsonObject);
+
+        jsonObject2.put("user", userAndProfile);
+        jsonObject2.put("ara", jsonObject.toString());
+        System.err.println(jsonObject2);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("String", "value");
+        map.put("user", userAndProfile);
+        map.put("integer", 983);
+        System.err.println(map);
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("String", "value");
+        hashMap.put("user", userAndProfile);
+        hashMap.put("integer", 983);
+        System.err.println(hashMap);
     }
 }

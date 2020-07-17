@@ -250,7 +250,7 @@ public class EntityActions {
 
         UserAndProfile userAndProfile = new UserAndProfile(userByActivationCode.get(), profileById.get());
 
-        return new ResponseOkData("ok", userAndProfile.toString());
+        return new ResponseOkData("ok", userAndProfile.toJSONObject()).toString();
     }
 
     public List<Location> getLocationList() {

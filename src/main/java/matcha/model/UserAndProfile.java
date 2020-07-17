@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.*;
 import matcha.converter.Converter;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.*;
@@ -27,7 +28,7 @@ public class UserAndProfile implements Serializable {
     private List<Integer> preference;
     private String biography;
     private List<String> tags;
-    private String images;
+    private List<ImageElem> images;
     private int avatar = -1;
 
     public UserAndProfile(User user, Profile profile) {
@@ -40,8 +41,24 @@ public class UserAndProfile implements Serializable {
         preference = profile.getPreference();
         biography = profile.getBiography();
         tags = profile.getTags();
-        images = profile.getImages().toString();
+        images = profile.getImages();
         avatar = profile.getAvatar();
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("login", login);
+        jsonObject.put("fname", fname);
+        jsonObject.put("lname", lname);
+        jsonObject.put("email", email);
+        jsonObject.put("age", age);
+        jsonObject.put("gender", gender);
+        jsonObject.put("preference", preference);
+        jsonObject.put("biography", biography);
+        jsonObject.put("tags", tags);
+        jsonObject.put("images", images);
+        jsonObject.put("avatar", avatar);
+        return jsonObject;
     }
 
     @Override

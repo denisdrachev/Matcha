@@ -11,6 +11,7 @@ import matcha.model.OnlyAction;
 import matcha.model.Profile;
 import matcha.model.User;
 import matcha.response.ResponseError;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Optional;
@@ -75,6 +76,8 @@ public class Converter {
 
     @SneakyThrows
     public static Optional<String> objectToJson(Object o) {
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put()
         ObjectMapper objectMapper = new ObjectMapper();
         return Optional.ofNullable(objectMapper.writeValueAsString(o));
     }
