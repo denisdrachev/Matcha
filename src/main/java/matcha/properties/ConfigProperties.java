@@ -20,6 +20,18 @@ public class ConfigProperties {
     @Value("${options.users.default.active}")
     boolean usersDefaultActive;
 
+    @Value("${options.users.default.init.active}")
+    boolean usersDefaultInitActive;
+
+    @Value("${options.users.default.init.login}")
+    String usersDefaultInitLogin;
+
+    @Value("${options.users.default.init.password}")
+    String usersDefaultInitPassword;
+
+    @Value("${options.users.default.init.code}")
+    String usersDefaultInitCode;
+
     @Value("${options.mail.send}")
     boolean mailSend;
 }

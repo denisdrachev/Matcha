@@ -40,4 +40,9 @@ options:
     send: false
   users:
     default:
+      init:
+        active: true
+        login: test
+        password: test
+        code: testtest
       active: true

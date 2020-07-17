@@ -18,8 +18,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setBlocked(rs.getBoolean("blocked"));
         user.setEmail(rs.getString("email"));
         user.setLogin(rs.getString("login"));
-        user.setPassword(rs.getBytes("password"));
-        user.setTime(rs.getDate("time"));
+        user.setPasswordBytes(rs.getBytes("password"));
+        user.setTime(rs.getTimestamp("time"));
         user.setSalt(rs.getBytes("salt"));
         user.setProfileId(rs.getInt("profileId") == 0 ? null : rs.getInt("profileId"));
         return user;

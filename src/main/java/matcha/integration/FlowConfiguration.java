@@ -181,8 +181,9 @@ public class FlowConfiguration {
         if (o instanceof Boolean) {
             try {
                 final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+                User user = Converter.convertToUser(json);
                 //проверка location. Если там ip, то найти его расположение, иначе - ничего не делать
-                o = entityActions.userLogin(node.get("login").asText(), node.get("password").asText(), node.get("location"));
+                o = entityActions.userLogin(user.getLogin(), user.getPassword(), user.getLocation());
             } catch (Exception e) {
                 log.error("Error. Error mapping json: " + json);
             }
@@ -221,6 +222,7 @@ public class FlowConfiguration {
                 }
             } catch (Exception e) {
                 log.error("Error. Error mapping json: [{}] [{}]", json, e.getMessage());
+                o = new ResponseError("error", e.getMessage());
             }
         }
         return o;
@@ -230,10 +232,8 @@ public class FlowConfiguration {
         Object o = validateOnlyBySchema(schemaName, json);
         if (o instanceof Boolean) {
             try {
-
                 User user = Converter.convertToUser(json);
                 o = entityActions.profileGet(user);
-
             } catch (Exception e) {
                 log.error("Error. Error profileGetPrepare: [{}] [{}]", json, e.getMessage());
             }

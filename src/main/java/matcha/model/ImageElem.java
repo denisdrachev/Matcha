@@ -21,6 +21,12 @@ public class ImageElem {
 
     @Override
     public String toString() {
-        return Converter.objectToJson(this).get();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{\"index\":")
+                .append(index)
+                .append(", \"src\":\"")
+                .append(src)
+                .append("\"}");
+        return stringBuilder.toString();
     }
 }

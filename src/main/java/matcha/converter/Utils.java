@@ -52,11 +52,10 @@ public class Utils {
         return salt;
     }
 
-    public static User initRegistryUser(Object o, String password) {
-        User user = (User) o;
+    public static User initRegistryUser(User user, String password) {
         user.setActivationCode(UUID.randomUUID().toString());
         user.setSalt(Utils.getSalt());
-        user.setPassword(Utils.getPrepearPassword(password, user.getSalt()));
+        user.setPasswordBytes(Utils.getPrepearPassword(password, user.getSalt()));
         return user;
     }
 

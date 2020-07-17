@@ -12,12 +12,14 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
+public class User implements Serializable, MyObject{
 
     private int id;
     private String login;
     @ToString.Exclude
-    private byte[] password;
+    private String password;
+    @ToString.Exclude
+    private byte[] passwordBytes;
     @ToString.Exclude
     private String activationCode;
     private String fname;
@@ -29,5 +31,14 @@ public class User implements Serializable {
     @ToString.Exclude
     private byte[] salt;
     private Integer profileId = null;
+    @ToString.Exclude
+    private Location location;
 
+//    public void setPassword(byte[] password) {
+//        this.password = password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password.getBytes();
+//    }
 }

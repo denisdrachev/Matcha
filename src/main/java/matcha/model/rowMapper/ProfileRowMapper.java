@@ -8,6 +8,9 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ProfileRowMapper implements RowMapper<Profile> {
@@ -19,14 +22,17 @@ public class ProfileRowMapper implements RowMapper<Profile> {
         profile.setAvatar(rs.getInt("avatar"));
         profile.setBiography(rs.getString("biography"));
         profile.setGender(rs.getInt("gender"));
-        profile.setPreference(rs.getInt("preference"));
+        if (rs.getString("preference") != null)
+            profile.setPreference(Stream.of(rs.getString("preference").split(","))
+                    .map(Integer::parseInt).collect(Collectors.toList()));
 
-        if (rs.getString("images") != null)
-            profile.setImagesIds(Arrays.asList(rs.getString("images").split(",")));
+        if (rs.getString("images") != null && !rs.getString("images").isEmpty()) {
+            profile.setImagesIds(Stream.of(rs.getString("images").split(",")).collect(Collectors.toList()));
+        }
 
         if (rs.getString("tags") != null)
             profile.setTags(Arrays.asList(rs.getString("tags").split(",")));
-
+        System.err.println(profile);
         return profile;
     }
 }

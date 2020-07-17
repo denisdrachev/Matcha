@@ -15,7 +15,10 @@
       "email": "email@gmail.com",
       "age": 55,
       "gender": 1,
-      "preference": 0,
+      "preference": [
+        0,
+        1
+      ],
       "biography": "my name is bobby",
       "tags": [
         "aaa",
@@ -31,7 +34,11 @@
           "src": "uwyeihfu2iwue"
         }
       ],
-      "avatar": 1
+      "avatar": 1,
+      "location": {
+        "x": 55.6634545,
+        "y": 37.5102081
+      }
     }
   ],
   "required": [
@@ -47,7 +54,8 @@
     "biography",
     "tags",
     "images",
-    "avatar"
+    "avatar",
+    "location"
   ],
   "additionalProperties": true,
   "properties": {
@@ -133,13 +141,33 @@
     },
     "preference": {
       "$id": "#/properties/preference",
-      "type": "integer",
+      "type": "array",
       "title": "The preference schema",
       "description": "An explanation about the purpose of this instance.",
-      "default": 0,
+      "default": [],
       "examples": [
-        0
-      ]
+        [
+          0,
+          1
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "$id": "#/properties/preference/items/anyOf/0",
+            "type": "integer",
+            "title": "The first anyOf schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0,
+              1
+            ]
+          }
+        ],
+        "$id": "#/properties/preference/items"
+      }
     },
     "biography": {
       "$id": "#/properties/biography",
@@ -255,6 +283,46 @@
       "examples": [
         1
       ]
+    },
+    "location": {
+      "$id": "#/properties/location",
+      "type": "object",
+      "title": "The location schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "x": 55.6634545,
+          "y": 37.5102081
+        }
+      ],
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "x": {
+          "$id": "#/properties/location/properties/x",
+          "type": "number",
+          "title": "The x schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0,
+          "examples": [
+            55.6634545
+          ]
+        },
+        "y": {
+          "$id": "#/properties/location/properties/y",
+          "type": "number",
+          "title": "The y schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0,
+          "examples": [
+            37.5102081
+          ]
+        }
+      }
     }
   }
 }

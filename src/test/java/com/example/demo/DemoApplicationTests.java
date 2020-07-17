@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
+import matcha.converter.Converter;
 import matcha.properties.ConfigProperties;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest
 //@ContextConfiguration
@@ -104,4 +107,24 @@ public class DemoApplicationTests {
 //        System.err.println(configurationProperty);
 //    }
 
+    @Test
+    public void test() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Map map = new HashMap();
+        map.put("method", "POST");
+        map.put("request", "/register");
+        String s = mapper.writeValueAsString(map);
+        Map map2 = mapper.readValue(s, Map.class);
+        System.err.println(map);
+        System.err.println(Converter.objectToJson(map).get());
+        Assert.assertEquals(map, map2);
+    }
+
+    @Test
+    public void locationTest() {
+        double f = 55.6634545;
+        System.err.println(f);
+        Assert.assertEquals(55.6634545, f, 0.00000001);
+//        55.6634545,37.5102081
+    }
 }

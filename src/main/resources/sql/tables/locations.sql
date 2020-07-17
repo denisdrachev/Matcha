@@ -1,6 +1,8 @@
 CREATE TABLE IF NOT EXISTS locations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    profile INT,
-    location VARCHAR(255) NOT NULL,
-    FOREIGN KEY (profile)  REFERENCES profiles (id)
+    user INT,
+    x FLOAT NOT NULL,
+    y FLOAT NOT NULL,
+    time DATETIME,
+    FOREIGN KEY (user)  REFERENCES users (id)
 ) ;

@@ -10,8 +10,8 @@
       "login": "login_example",
       "password": "password_example",
       "location": {
-        "x": 5,
-        "y": 10
+        "x": 55.6634545,
+        "y": 37.5102081
       }
     }
   ],
@@ -27,7 +27,6 @@
       "type": "string",
       "title": "The login schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "login_example"
@@ -38,7 +37,6 @@
       "type": "string",
       "title": "The password schema",
       "description": "An explanation about the purpose of this instance.",
-      "minLength": 1,
       "default": "",
       "examples": [
         "password_example"
@@ -52,13 +50,37 @@
       "default": {},
       "examples": [
         {
-          "x": 5,
-          "y": 10
+          "x": 55.6634545,
+          "y": 37.5102081
         }
       ],
-      "required": [],
+      "required": [
+        "x",
+        "y"
+      ],
       "additionalProperties": true,
-      "properties": {}
+      "properties": {
+        "x": {
+          "$id": "#/properties/location/properties/x",
+          "type": "number",
+          "title": "The x schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0,
+          "examples": [
+            55.6634545
+          ]
+        },
+        "y": {
+          "$id": "#/properties/location/properties/y",
+          "type": "number",
+          "title": "The y schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0,
+          "examples": [
+            37.5102081
+          ]
+        }
+      }
     }
   }
 }

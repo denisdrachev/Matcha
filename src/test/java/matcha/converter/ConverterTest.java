@@ -3,6 +3,7 @@ package matcha.converter;
 import com.google.common.collect.Lists;
 import matcha.model.ImageElem;
 import matcha.model.OnlyAction;
+import matcha.model.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -45,5 +46,28 @@ class ConverterTest {
         String value1 = imageElems.toString();
         List<ImageElem> imageElems1 = Converter.convertToImages(value1);
         Assert.assertEquals(imageElems1, imageElems);
+    }
+
+    @Test
+    void convertToUser() {
+        String json = "{\n" +
+                "\t\"login\":\"ivan3343s4\",\n" +
+                "\t\"password\":\"test\",\n" +
+                "\t\"fname\":\"first name\",\n" +
+                "\t\"lname\":\"last name\",\n" +
+                "\t\"email\":\"letasi6850@xenzld.com\",\n" +
+                "\t\"location\":{\n" +
+                "\t\t\"x\":1,\n" +
+                "\t\t\"y\":2\n" +
+                "\t}\n" +
+                "}";
+        User user = Converter.convertToUser(json);
+        User u = new User();
+        u.setPasswordBytes("test".getBytes());
+        System.err.println(Arrays.toString(user.getPasswordBytes()));
+        System.err.println(Arrays.toString(u.getPasswordBytes()));
+
+        System.err.println(user.getPassword());
+        System.err.println(u.getPassword());
     }
 }

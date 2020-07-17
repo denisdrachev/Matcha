@@ -17,13 +17,13 @@ import java.util.List;
 public class Profile implements Serializable {
 
     private Integer id;
-    private int age;
+    private Integer age = null;
     private int gender;
-    private int preference;
+    private List<Integer> preference = new ArrayList<>();
     private String biography;
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
     private List<ImageElem> images = new ArrayList<>();
-    @ToString.Exclude
+//    @ToString.Exclude
     private List<String> imagesIds;
     private int avatar = -1;
 

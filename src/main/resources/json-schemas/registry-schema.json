@@ -13,8 +13,8 @@
       "lname": "last name",
       "email": "email@gmail.com",
       "location": {
-        "x": 5,
-        "y": 10
+        "x": 55.6634545,
+        "y": 37.5102081
       }
     }
   ],
@@ -23,7 +23,8 @@
     "password",
     "fname",
     "lname",
-    "email"
+    "email",
+    "location"
   ],
   "additionalProperties": true,
   "properties": {
@@ -33,7 +34,6 @@
       "title": "The login schema",
       "description": "An explanation about the purpose of this instance.",
       "default": "",
-      "minLength": 1,
       "examples": [
         "login"
       ]
@@ -44,7 +44,6 @@
       "title": "The password schema",
       "description": "An explanation about the purpose of this instance.",
       "default": "",
-      "minLength": 1,
       "examples": [
         "password"
       ]
@@ -55,7 +54,6 @@
       "title": "The fname schema",
       "description": "An explanation about the purpose of this instance.",
       "default": "",
-      "minLength": 1,
       "examples": [
         "first name"
       ]
@@ -66,7 +64,6 @@
       "title": "The lname schema",
       "description": "An explanation about the purpose of this instance.",
       "default": "",
-      "minLength": 1,
       "examples": [
         "last name"
       ]
@@ -77,8 +74,6 @@
       "title": "The email schema",
       "description": "An explanation about the purpose of this instance.",
       "default": "",
-      "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
-      "minLength": 1,
       "examples": [
         "email@gmail.com"
       ]
@@ -91,8 +86,8 @@
       "default": {},
       "examples": [
         {
-          "x": 5,
-          "y": 10
+          "x": 55.6634545,
+          "y": 37.5102081
         }
       ],
       "required": [
@@ -103,22 +98,22 @@
       "properties": {
         "x": {
           "$id": "#/properties/location/properties/x",
-          "type": "integer",
+          "type": "number",
           "title": "The x schema",
           "description": "An explanation about the purpose of this instance.",
-          "default": 0,
+          "default": 0.0,
           "examples": [
-            5
+            55.6634545
           ]
         },
         "y": {
           "$id": "#/properties/location/properties/y",
-          "type": "integer",
+          "type": "number",
           "title": "The y schema",
           "description": "An explanation about the purpose of this instance.",
-          "default": 0,
+          "default": 0.0,
           "examples": [
-            10
+            37.5102081
           ]
         }
       }

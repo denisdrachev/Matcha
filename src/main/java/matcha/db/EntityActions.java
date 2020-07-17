@@ -1,13 +1,11 @@
 package matcha.db;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.converter.Utils;
 import matcha.mail.Sender;
-import matcha.model.ImageElem;
-import matcha.model.Profile;
-import matcha.model.User;
-import matcha.model.UserAndProfile;
+import matcha.model.*;
 import matcha.response.ResponseError;
 import matcha.response.ResponseOk;
 import matcha.response.ResponseOkData;
@@ -18,16 +16,14 @@ import java.util.*;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EntityActions {
 
-    @Autowired
-    EntityManipulator entityManipulator;
-
-    @Autowired
-    Sender mailSender;
+    private final EntityManipulator entityManipulator;
+    private final Sender mailSender;
 
     public Object userRegistry(User user) {
+
         Optional<Integer> userExist = entityManipulator.getUserCountByLogin(user.getLogin());
         if (userExist.isEmpty() || userExist.get() != 0) {
             StringBuilder sb = new StringBuilder()
@@ -37,7 +33,7 @@ public class EntityActions {
             return new ResponseError("error", sb.toString());
         }
 
-        Optional<Integer> emptyProfile = entityManipulator.createEmptyProfile();
+        Optional<Integer> emptyProfile = entityManipulator.insertEmptyProfile();
         if (emptyProfile.isEmpty()) {
             StringBuilder sb = new StringBuilder()
                     .append("userRegistry. Error create user profile: ");
@@ -47,14 +43,16 @@ public class EntityActions {
         }
         user.setProfileId(emptyProfile.get());
 
-        Optional<Integer> userCreated = entityManipulator.createUser(user);
-        if (userCreated.isEmpty() || userCreated.get() != 1) {
-            StringBuilder sb = new StringBuilder()
-                    .append("userRegistry. Error create user: ");
-            log.error(sb.toString().concat(user.toString()));
-            sb.append(user.getLogin());
-            return new ResponseError("error", sb.toString());
+
+        Object userCreated = entityManipulator.insertUser(user);
+        if (userCreated instanceof ResponseError)
+            return userCreated;
+
+        if (user.getLocation() != null) {
+            user.getLocation().setUser(userCreated);
+            entityManipulator.insertLocations(user.getLocation());
         }
+
         boolean b = mailSender.sendRegistrationMail(user.getEmail(), user.getActivationCode());
         if (!b) {
             Optional<Integer> userCountByLogin = entityManipulator.getUserCountByLogin(user.getLogin());
@@ -67,7 +65,7 @@ public class EntityActions {
         return new ResponseOk("ok", "CREATED", user.getLogin());
     }
 
-//    public Object userUpdate(User user) {
+//    publi Object userUpdate(User user) {
 //        Optional<Integer> userExist = entityManipulator.getUserCountByLogin(user.getLogin());
 //        if (userExist.isEmpty() || userExist.get() != 0) {
 //            StringBuilder sb = new StringBuilder()
@@ -105,40 +103,41 @@ public class EntityActions {
             return false;
         userByActivationCode.get().setActivationCode(null);
         userByActivationCode.get().setActive(true);
-        Optional<Integer> integer = entityManipulator.updateUserById(userByActivationCode.get());
-        return integer.isPresent() && integer.get() == 1;
+        MyObject myObject = entityManipulator.updateUserById(userByActivationCode.get());
+        return !(myObject instanceof ResponseError);
     }
 
-    public Object userLogin(String login, String password, Object location) {
+    public Object userLogin(String login, String password, Location location) {
         String message = "";
-        Optional<User> userByLogin = null;
-        try {
-            userByLogin = entityManipulator.getUserByLogin(login);
-        } catch (Exception ignored) {
-        }
-        if (userByLogin != null && userByLogin.isPresent()) {
-            User user = userByLogin.get();
-            if (user.isActive() && !user.isBlocked()) {
-                if (Utils.checkPassword(password, user.getSalt(), user.getPassword())) {
-                    user.setActivationCode(UUID.randomUUID().toString());
-                    user.setTime(Calendar.getInstance().getTime());
-                    //сохранить location в базу
-                    Optional<Integer> integer = entityManipulator.updateUserById(user);
-                    if (integer.isPresent() && integer.get() == 1) {
-                        log.info("userLogin. User ".concat(user.getLogin()).concat(" logged in successfully"));
-                        return new ResponseOk("ok", user.getActivationCode(), user.getLogin());
-                    } else
-                        message = "Login failed";
-                } else
-                    message = "Username or password is incorrect";
+        Object userByLoginObject = entityManipulator.getUserByLogin(login);
+        if (userByLoginObject instanceof ResponseError)
+            return userByLoginObject;
+        User user = (User) userByLoginObject;
+        location.setUser(user.getId());
+        entityManipulator.insertLocations(location);
+
+        if (user.isActive() && !user.isBlocked()) {
+            if (Utils.checkPassword(password, user.getSalt(), user.getPasswordBytes())) {
+                user.setActivationCode(UUID.randomUUID().toString());
+                user.setTime(Calendar.getInstance().getTime());
+                //сохранить location в базу
+                MyObject updateRes = entityManipulator.updateUserById(user);
+                if (updateRes instanceof ResponseError) {
+                    ResponseError error = (ResponseError) updateRes;
+                    error.setMessage("Ошибка авторизации");
+                    return error;
+                } else {
+                    return new ResponseOk("ok", user.getActivationCode(), user.getLogin());
+                }
             } else
-                message = "User ".concat(login).concat(" is blocked or inactive");
+                message = "Логин или пароль неверны";
         } else
-            message = "User ".concat(login).concat(" not found");
+            message = "Пользователь ".concat(login).concat(" заблокирован или неактивен");
         log.info("userLogin. ".concat(message));
         return new ResponseError("error", message);
     }
 
+    //TODO подумать, мб переделать, чтобы изолировать от получения пользователя из бд
     public Object userUpdate(User user) {
 
         Optional<User> userByActivationCode = entityManipulator.getUserByActivationCode(user.getActivationCode());
@@ -148,12 +147,16 @@ public class EntityActions {
             return new ResponseError("error", "Перелогинься!");
         }
         user.setProfileId(userByActivationCode.get().getProfileId());
+        user.getLocation().setUser(userByActivationCode.get().getId());
+        user.setActive(userByActivationCode.get().isActive());
+        user.setBlocked(userByActivationCode.get().isBlocked());
+        entityManipulator.insertLocations(user.getLocation());
 
         Optional<Integer> userCountByLoginAndActivationCode =
                 entityManipulator.getUserCountByLoginAndActivationCode(user.getLogin(), user.getActivationCode());
         if (userCountByLoginAndActivationCode.isPresent() && userCountByLoginAndActivationCode.get() == 0) {
-            Optional<User> userByLogin = entityManipulator.getUserByLogin(user.getLogin());
-            if (userByLogin.isPresent()) {
+            Optional<Integer> userCountByLogin = entityManipulator.getUserCountByLogin(user.getLogin());
+            if (userCountByLogin.isEmpty() || (userCountByLogin.isPresent() && userCountByLogin.get() != 0)) {
                 log.warn("User with login '{}' exist!", user.getActivationCode());
                 return new ResponseError("error", "Поьзователь с логином " + user.getLogin() + " уже существует!");
             }
@@ -171,32 +174,31 @@ public class EntityActions {
         }
 
         if (profileById.get().getImagesIds() != null)
-        profileById.get().getImagesIds().forEach(imageId -> {
-            Optional<Integer> dropRes = entityManipulator.dropImageById(imageId);
-            if (dropRes.isEmpty() || dropRes.get() != 1) {
-                log.error("profileSave. Error delete image [id = {}]", imageId);
-            }
-        });
+            profileById.get().getImagesIds().forEach(imageId -> {
+                Optional<Integer> dropRes = entityManipulator.dropImageById(imageId);
+                if (dropRes.isEmpty() || dropRes.get() != 1) {
+                    log.error("profileSave. Error delete image [id = {}]", imageId);
+                }
+            });
 
-        if (profile.getImages() != null)
-        profile.getImages().forEach(imageElem -> {
-            Optional<Integer> integer = entityManipulator.insertImage(imageElem);
-            if (integer.isEmpty()) {
-                log.error("profileSave. Error to save image [{}]", imageElem);
-            }
-            else {
-                imageElem.setId(integer.get());
-            }
-        });
+        System.err.println("1. " + profile.getImages());
 
-        if (profile.getImages() != null) {
-            ImageElem imageElem1 = profile.getImages().stream()
+        if (profile.getImages().size() > 0) {
+            profile.getImages().forEach(imageElem -> {
+                Optional<Integer> integer = entityManipulator.insertImage(imageElem);
+                if (integer.isEmpty()) {
+                    log.error("profileSave. Error to save image [{}]", imageElem);
+                } else {
+                    imageElem.setId(integer.get());
+                }
+            });
+            System.err.println("2. " + profile.getImages());
+
+            profile.getImages().stream()
                     .filter(imageElem -> imageElem.getIndex() == profile.getAvatar())
                     .findFirst()
-                    .orElse(null);
-            if (imageElem1 != null) {
-                profile.setAvatar(imageElem1.getId());
-            }
+                    .ifPresent(imageElem1 -> profile.setAvatar(imageElem1.getId()));
+            System.err.println("3. " + profile.getImages());
         }
 
         Optional<Integer> profileUpdate = entityManipulator.updateProfileById(profile);
@@ -228,7 +230,6 @@ public class EntityActions {
 //                    }
 
 
-
 //        return new ResponseError("error", message);
     }
 
@@ -250,5 +251,9 @@ public class EntityActions {
         UserAndProfile userAndProfile = new UserAndProfile(userByActivationCode.get(), profileById.get());
 
         return new ResponseOkData("ok", userAndProfile.toString());
+    }
+
+    public List<Location> getLocationList() {
+        return entityManipulator.getLocations();
     }
 }

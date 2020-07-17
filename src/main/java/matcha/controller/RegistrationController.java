@@ -26,7 +26,7 @@ public class RegistrationController {
         Locale locale = request.getLocale();
         boolean verificationToken = entityActions.getVerificationToken(token);
 
-        if (verificationToken == false) {
+        if (!verificationToken) {
             String message = "auth.message.invalidToken"; //messages.getMessage("auth.message.invalidToken", null, locale);
             model.addAttribute("message", message);
             return "redirect:/badUser.html?lang=" + locale.getLanguage();
