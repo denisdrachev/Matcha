@@ -75,7 +75,7 @@ public class EntityManipulator {
         return Optional.ofNullable(user);
     }
 
-    public Object getUserByLogin(String login) {
+    public MyObject getUserByLogin(String login) {
         log.info("Get user by login [{}]", login);
         try {
             User user = jdbcTemplate.queryForObject(Select.selectUserByLogin, new UserRowMapper(), login);
@@ -170,6 +170,7 @@ public class EntityManipulator {
         return Optional.ofNullable(integer);
     }
 
+    //TODO рефакторинг метода
     public Optional<Profile> getProfileById(int profileId) {
 
         Profile profile = jdbcTemplate.queryForObject(Select.selectProfileById,
@@ -204,7 +205,7 @@ public class EntityManipulator {
                 ps.setNull(4, Types.VARCHAR);
                 ps.setNull(5, Types.VARCHAR);
                 ps.setNull(6, Types.VARCHAR);
-                ps.setInt(7, -1);
+                ps.setNull(7, Types.VARCHAR);
                 return ps;
             }
         }, keyHolder);
@@ -324,7 +325,7 @@ public class EntityManipulator {
         try {
             System.err.println("TIME: " + location.getTime());
             int insert = jdbcTemplate.update(Insert.insertLocation, location.getUser(),
-                    location.getX(), location.getY(),  location.getTime());
+                    location.getX(), location.getY(), location.getTime());
             log.info("Insert image result: {}", insert);
         } catch (Exception e) {
             log.error("insertLocations. Failed to insert location:[{}] message:{}", location, e.getMessage());

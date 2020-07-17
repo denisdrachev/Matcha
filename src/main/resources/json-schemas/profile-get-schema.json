@@ -7,11 +7,13 @@
   "default": {},
   "examples": [
     {
-      "activationCode": "activation_code"
+      "activationCode": "activation_code",
+      "login": "test"
     }
   ],
   "required": [
-    "activationCode"
+    "activationCode",
+    "login"
   ],
   "additionalProperties": true,
   "properties": {
@@ -23,9 +25,17 @@
       "default": "",
       "examples": [
         "activation_code"
-      ],
-      "maxLength": 40,
-      "minLength": 5
+      ]
+    },
+    "login": {
+      "$id": "#/properties/login",
+      "type": "string",
+      "title": "The login schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "test"
+      ]
     }
   }
 }

@@ -18,13 +18,13 @@ public class Profile implements Serializable {
 
     private Integer id;
     private Integer age = null;
-    private int gender;
+    private Integer gender = null;
     private List<Integer> preference = new ArrayList<>();
     private String biography;
     private List<String> tags = new ArrayList<>();
     private List<ImageElem> images = new ArrayList<>();
 //    @ToString.Exclude
     private List<String> imagesIds;
-    private int avatar = -1;
+    private Integer avatar = null;
 
 }

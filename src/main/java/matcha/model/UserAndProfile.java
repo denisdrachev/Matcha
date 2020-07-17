@@ -23,13 +23,14 @@ public class UserAndProfile implements Serializable {
     private String fname;
     private String lname;
     private String email;
-    private int age;
-    private int gender;
+    private Integer age;
+    private Integer gender;
     private List<Integer> preference;
     private String biography;
     private List<String> tags;
     private List<ImageElem> images;
-    private int avatar = -1;
+    private Integer avatar = -1;
+    private Date time;
 
     public UserAndProfile(User user, Profile profile) {
         login = user.getLogin();
@@ -43,6 +44,7 @@ public class UserAndProfile implements Serializable {
         tags = profile.getTags();
         images = profile.getImages();
         avatar = profile.getAvatar();
+        time = user.getTime();
     }
 
     public JSONObject toJSONObject() {
@@ -51,13 +53,15 @@ public class UserAndProfile implements Serializable {
         jsonObject.put("fname", fname);
         jsonObject.put("lname", lname);
         jsonObject.put("email", email);
-        jsonObject.put("age", age);
-        jsonObject.put("gender", gender);
+        jsonObject.put("age", age == null ? JSONObject.NULL : age);
+        System.err.println("GENDER: " + gender);
+        jsonObject.put("gender", gender == null ? JSONObject.NULL : gender);
         jsonObject.put("preference", preference);
         jsonObject.put("biography", biography);
         jsonObject.put("tags", tags);
         jsonObject.put("images", images);
-        jsonObject.put("avatar", avatar);
+        jsonObject.put("avatar", avatar == null ? JSONObject.NULL : avatar);
+        jsonObject.put("time", time);
         return jsonObject;
     }
 
@@ -66,10 +70,4 @@ public class UserAndProfile implements Serializable {
         return Converter.objectToJson(this).get();
     }
 
-//    public ObjectNode toObjectNode() {
-//        ObjectMapper ob = new ObjectMapper();
-//        String s = Converter.objectToJson(this).get();
-//        Map map = ob.readValue(s, Map.class);
-//        return
-//    }
 }

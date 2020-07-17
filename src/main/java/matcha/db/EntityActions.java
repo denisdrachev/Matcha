@@ -109,7 +109,7 @@ public class EntityActions {
 
     public Object userLogin(String login, String password, Location location) {
         String message = "";
-        Object userByLoginObject = entityManipulator.getUserByLogin(login);
+        MyObject userByLoginObject = entityManipulator.getUserByLogin(login);
         if (userByLoginObject instanceof ResponseError)
             return userByLoginObject;
         User user = (User) userByLoginObject;
@@ -233,22 +233,21 @@ public class EntityActions {
 //        return new ResponseError("error", message);
     }
 
-    public Object profileGet(User user) {
+    public Object profileGet(String login) {
 
-        Optional<User> userByActivationCode = entityManipulator.getUserByActivationCode(user.getActivationCode());
+        MyObject userByLogin = entityManipulator.getUserByLogin(login);
+        if (userByLogin instanceof ResponseError)
+            return userByLogin;
 
-        if (userByActivationCode.isEmpty()) {
-            log.warn("profileGet. User with activationCode '{}' not found!", user.getActivationCode());
-            return new ResponseError("error", "Пользователь не найден!");
-        }
+        User user = (User) userByLogin;
 
-        Optional<Profile> profileById = entityManipulator.getProfileById(userByActivationCode.get().getProfileId());
+        Optional<Profile> profileById = entityManipulator.getProfileById(user.getProfileId());
         if (profileById.isEmpty()) {
-            log.error("profileGet. Error load profile for user '{}'", userByActivationCode.get());
+            log.error("profileGet. Error load profile for user '{}'", user);
             return new ResponseError("error", "Ошибка! Не удалось загрузить профиль!");
         }
 
-        UserAndProfile userAndProfile = new UserAndProfile(userByActivationCode.get(), profileById.get());
+        UserAndProfile userAndProfile = new UserAndProfile(user, profileById.get());
 
         return new ResponseOkData("ok", userAndProfile.toJSONObject()).toString();
     }

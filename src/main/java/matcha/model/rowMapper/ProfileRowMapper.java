@@ -18,10 +18,10 @@ public class ProfileRowMapper implements RowMapper<Profile> {
     public Profile mapRow(ResultSet rs, int rowNum) throws SQLException {
         Profile profile = new Profile();
         profile.setId(rs.getInt("id"));
-        profile.setAge(rs.getInt("age"));
-        profile.setAvatar(rs.getInt("avatar"));
+        profile.setAge(rs.getInt("age") == 0 ? null : rs.getInt("age"));
+        profile.setAvatar(rs.getInt("avatar") == 0 ? null : rs.getInt("avatar"));
         profile.setBiography(rs.getString("biography"));
-        profile.setGender(rs.getInt("gender"));
+        profile.setGender(rs.getInt("gender") == 0 ? null : rs.getInt("gender"));
         if (rs.getString("preference") != null)
             profile.setPreference(Stream.of(rs.getString("preference").split(","))
                     .map(Integer::parseInt).collect(Collectors.toList()));

@@ -233,7 +233,7 @@ public class FlowConfiguration {
         if (o instanceof Boolean) {
             try {
                 User user = Converter.convertToUser(json);
-                o = entityActions.profileGet(user);
+                o = entityActions.profileGet(user.getLogin());
             } catch (Exception e) {
                 log.error("Error. Error profileGetPrepare: [{}] [{}]", json, e.getMessage());
             }
