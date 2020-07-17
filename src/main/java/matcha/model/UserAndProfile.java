@@ -50,14 +50,13 @@ public class UserAndProfile implements Serializable {
     public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("login", login);
-        jsonObject.put("fname", fname);
-        jsonObject.put("lname", lname);
+        jsonObject.put("fname", fname == null ? JSONObject.NULL : fname);
+        jsonObject.put("lname", lname == null ? JSONObject.NULL : lname);
         jsonObject.put("email", email);
         jsonObject.put("age", age == null ? JSONObject.NULL : age);
-        System.err.println("GENDER: " + gender);
         jsonObject.put("gender", gender == null ? JSONObject.NULL : gender);
         jsonObject.put("preference", preference);
-        jsonObject.put("biography", biography);
+        jsonObject.put("biography", biography == null ? JSONObject.NULL : biography);
         jsonObject.put("tags", tags);
         jsonObject.put("images", images);
         jsonObject.put("avatar", avatar == null ? JSONObject.NULL : avatar);
