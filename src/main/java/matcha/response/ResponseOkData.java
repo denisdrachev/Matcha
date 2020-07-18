@@ -20,9 +20,8 @@ public class ResponseOkData implements MyObject {
 
     @Override
     public String toString() {
-        return "{" +
-                "type:'" + type + '\'' +
-                ", data:" + data +
+        return "{\"type\":\"" + type + "\"" +
+                ", \"data\":" + data +
                 '}';
     }
 

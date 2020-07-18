@@ -1,23 +1,21 @@
 package matcha.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import matcha.converter.Converter;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAndProfile implements Serializable {
-
-//    private User user;
-//    private Profile profile;
 
     private String login;
     private String fname;
