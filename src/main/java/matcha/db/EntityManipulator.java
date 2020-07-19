@@ -1,6 +1,5 @@
 package matcha.db;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.db.crud.Drop;
@@ -12,10 +11,7 @@ import matcha.model.rowMapper.ImageRowMapper;
 import matcha.model.rowMapper.LocationRowMapper;
 import matcha.model.rowMapper.ProfileRowMapper;
 import matcha.model.rowMapper.UserRowMapper;
-import matcha.properties.StringConstants;
 import matcha.response.ResponseError;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -295,6 +291,31 @@ public class EntityManipulator {
         }
     }
 
+    public Location getActiveLocationByLogin(Integer userId) {
+        log.info("Get active location by login {}...", userId);
+        try {
+            Location query = jdbcTemplate.queryForObject(Select.selectLocationByLoginAndActive,
+                    new LocationRowMapper(), userId);
+            log.info("Get active location by login done. Result: {}", query);
+            return query;
+        } catch (Exception e) {
+            log.info("Failed to load active location for user {}", userId);
+            return null;
+        }
+    }
+
+    public Integer updateLocation(Location location) {
+        log.info("Update location {}...", location);
+        try {
+            int update = jdbcTemplate.update(Update.updateLocationById, location.isActive(), location.getId());
+            log.info("Update location done. Result: {}", update);
+            return update;
+        } catch (Exception e) {
+            log.info("Failed to update location {}", location);
+            return null;
+        }
+    }
+
 //    public Optional<Integer> createImage(Image image) {
 //        log.info("Create image: ".concat(image.toString()));
 //        int update = jdbcTemplate.update(Insert.insertImage, image.getImg());
@@ -322,10 +343,11 @@ public class EntityManipulator {
 
     public void insertLocations(Location location) {
         log.info("Insert location '{}'", location);
+        if (location == null) return;
         try {
             System.err.println("TIME: " + location.getTime());
             int insert = jdbcTemplate.update(Insert.insertLocation, location.getUser(),
-                    location.getX(), location.getY(), location.getTime());
+                    location.getX(), location.getY(), location.getTime(), location.isActive());
             log.info("Insert image result: {}", insert);
         } catch (Exception e) {
             log.error("insertLocations. Failed to insert location:[{}] message:{}", location, e.getMessage());

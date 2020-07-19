@@ -1,6 +1,7 @@
 package matcha.model;
 
 import lombok.*;
+import matcha.converter.Converter;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -17,6 +18,8 @@ public class Location implements Serializable {
     private int user;
     private Double x;
     private Double y;
+    @ToString.Exclude
+    private boolean active = false;
     private Date time = Calendar.getInstance().getTime();
 
     public void setUser(int user) {
@@ -25,5 +28,10 @@ public class Location implements Serializable {
 
     public void setUser(Object user) {
         this.user = (int) user;
+    }
+
+    @Override
+    public String toString() {
+        return Converter.objectToJson(this).get();
     }
 }

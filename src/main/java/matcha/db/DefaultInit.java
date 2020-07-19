@@ -2,17 +2,13 @@ package matcha.db;
 
 import lombok.AllArgsConstructor;
 import matcha.converter.Utils;
-import matcha.db.crud.Insert;
-import matcha.model.Location;
 import matcha.model.User;
 import matcha.properties.ConfigProperties;
-import matcha.validator.ValidatorFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import java.util.Arrays;
 import java.util.Date;
 
 @AllArgsConstructor

@@ -208,6 +208,7 @@ public class FlowConfiguration {
                     log.warn("profilePrepare. Error avatar value out of index images [{}]", profile);
                     return new ResponseError("error", "Ошибка. Указано не существующее значение аватара");
                 }
+                user.getLocation().setActive(true);
                 Object o1 = entityActions.userUpdate(user);
 
 

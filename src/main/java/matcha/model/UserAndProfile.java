@@ -29,6 +29,7 @@ public class UserAndProfile implements Serializable {
     private List<ImageElem> images;
     private Integer avatar = -1;
     private Date time;
+    private Location location;
 
     public UserAndProfile(User user, Profile profile) {
         login = user.getLogin();
@@ -43,6 +44,7 @@ public class UserAndProfile implements Serializable {
         images = profile.getImages();
         avatar = profile.getAvatar();
         time = user.getTime();
+        location = user.getLocation();
     }
 
     public JSONObject toJSONObject() {
@@ -59,6 +61,13 @@ public class UserAndProfile implements Serializable {
         jsonObject.put("images", images);
         jsonObject.put("avatar", avatar == null ? JSONObject.NULL : avatar);
         jsonObject.put("time", time);
+
+        JSONObject locationJson = new JSONObject();
+        if (location != null) {
+            locationJson.put("x", location.getX());
+            locationJson.put("y", location.getY());
+        }
+        jsonObject.put("location", location == null ? JSONObject.NULL : locationJson);
         return jsonObject;
     }
 

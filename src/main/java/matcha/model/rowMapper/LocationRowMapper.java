@@ -15,6 +15,7 @@ public class LocationRowMapper implements RowMapper<Location> {
         location.setUser(rs.getInt("user"));
         location.setX(rs.getDouble("x"));
         location.setY(rs.getDouble("y"));
+        location.setActive(rs.getBoolean("active"));
         location.setTime(rs.getTimestamp("time"));
         return location;
     }

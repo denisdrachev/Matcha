@@ -31,7 +31,7 @@ public class User implements Serializable, MyObject{
     @ToString.Exclude
     private byte[] salt;
     private Integer profileId = null;
-    @ToString.Exclude
+//    @ToString.Exclude
     private Location location;
 
 //    public void setPassword(byte[] password) {

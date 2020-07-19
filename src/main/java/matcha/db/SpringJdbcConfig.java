@@ -41,7 +41,7 @@ public class SpringJdbcConfig {
         jdbcTemplate.update(Insert.insertImage, 0, "ABCD");
         jdbcTemplate.update(Insert.insertUser, "loginnnn", "password".getBytes(), null, "Artur", "Kamnev", "fermer@gmail.com", 1, 0, new Date(), "salt_test".getBytes(), null);
         jdbcTemplate.update(Insert.insertProfile, 22, 1, 0, "Simple fermer", "fermer", null,  1);
-        jdbcTemplate.update(Insert.insertLocation, 1, 55.6634545, 37.5102081, Calendar.getInstance().getTime());
+        jdbcTemplate.update(Insert.insertLocation, 1, 55.6634545, 37.5102081, Calendar.getInstance().getTime(), false);
         jdbcTemplate.update(Insert.insertRaiting, 7, 1);
         jdbcTemplate.update(Insert.insertBlacklist, 1, 1);
         jdbcTemplate.update(Insert.insertImageLikeEvent, 1, 1, 1, 1);

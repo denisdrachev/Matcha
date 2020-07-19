@@ -24,6 +24,7 @@ public class Select {
     public static String selectImageById = "SELECT * FROM images WHERE id = ? LIMIT 1";
     public static String selectLocationById = "SELECT * FROM locations WHERE id = ? LIMIT 1";
     public static String selectLocationByUser = "SELECT * FROM locations WHERE user = ?";
+    public static String selectLocationByLoginAndActive = "SELECT * FROM locations WHERE user = ? AND active = TRUE";
     public static String selectLocations = "SELECT * FROM locations";
     public static String selectRatingById = "SELECT * FROM rating WHERE id = ? LIMIT 1";
     public static String selectBlacklistById = "SELECT * FROM blacklist WHERE id = ? LIMIT 1";

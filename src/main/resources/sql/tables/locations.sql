@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS locations (
     x FLOAT NOT NULL,
     y FLOAT NOT NULL,
     time DATETIME,
+    active BOOLEAN,
     FOREIGN KEY (user)  REFERENCES users (id)
 ) ;

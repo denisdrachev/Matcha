@@ -150,6 +150,17 @@ public class EntityActions {
         user.getLocation().setUser(userByActivationCode.get().getId());
         user.setActive(userByActivationCode.get().isActive());
         user.setBlocked(userByActivationCode.get().isBlocked());
+
+        if (user.getLocation() != null && user.getLocation().isActive()) {
+            Location activeLocationByLogin = entityManipulator.getActiveLocationByLogin(userByActivationCode.get().getId());
+            System.err.println("activeLocationByLogin: " + activeLocationByLogin);
+            if (activeLocationByLogin != null) {
+                activeLocationByLogin.setActive(false);
+                entityManipulator.updateLocation(activeLocationByLogin);
+            }
+        }
+        if (user.getLocation() != null) user.getLocation().setActive(true);
+        System.err.println(user.getLocation());
         entityManipulator.insertLocations(user.getLocation());
 
         Optional<Integer> userCountByLoginAndActivationCode =
@@ -161,6 +172,7 @@ public class EntityActions {
                 return new ResponseError("error", "Поьзователь с логином " + user.getLogin() + " уже существует!");
             }
         }
+
 
         return entityManipulator.updateUserByActivationCode(user);
     }
@@ -240,6 +252,7 @@ public class EntityActions {
             return userByLogin;
 
         User user = (User) userByLogin;
+        user.setLocation(entityManipulator.getActiveLocationByLogin(user.getId()));
 
         Optional<Profile> profileById = entityManipulator.getProfileById(user.getProfileId());
         if (profileById.isEmpty()) {
