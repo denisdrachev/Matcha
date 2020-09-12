@@ -1,6 +1,5 @@
 package matcha.db.crud;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Drop {
@@ -12,6 +11,7 @@ public class Drop {
     public static String images = "DROP TABLE IF EXISTS images;";
     public static String locations = "DROP TABLE IF EXISTS locations;";
     public static String rating = "DROP TABLE IF EXISTS rating;";
+    public static String chat = "DROP TABLE IF EXISTS chat;";
 
     public static String deleteUserById = "DELETE from users WHERE id = ?;";
     public static String deleteUserByLogin = "DELETE from users WHERE login = ?;";

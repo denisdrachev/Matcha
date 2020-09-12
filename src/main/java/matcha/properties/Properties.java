@@ -12,6 +12,7 @@ public class Properties {
     public static final String table_imageLikeEvents_path = "src/main/resources/sql/tables/imageLikeEvents.sql";
     public static final String table_blacklist_path = "src/main/resources/sql/tables/blacklist.sql";
     public static final String table_rating_path = "src/main/resources/sql/tables/rating.sql";
+    public static final String table_chat_path = "src/main/resources/sql/tables/chat.sql";
 
     public static List<String> getAllTablesPath() {
         List<String> list = new ArrayList<>();
@@ -22,6 +23,7 @@ public class Properties {
         list.add(table_blacklist_path);
         list.add(table_locations_path);
         list.add(table_imageLikeEvents_path);
+        list.add(table_chat_path);
         return list;
     }
 }

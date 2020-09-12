@@ -4,21 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import matcha.converter.Converter;
 import matcha.model.MyObject;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class ResponseOk implements MyObject, Response {
+public class ResponseDataList implements MyObject, Response {
 
     private String type;
-    private String token;
-    private String login;
-
-    @Override
-    public String toString() {
-        return Converter.objectToJson(this).get();
-    }
+    private List data;
 }

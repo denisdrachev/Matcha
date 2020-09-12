@@ -1,11 +1,9 @@
 package matcha.response;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import matcha.converter.Converter;
 import matcha.model.MyObject;
 import org.json.JSONObject;
 
@@ -13,7 +11,7 @@ import org.json.JSONObject;
 @NoArgsConstructor
 @Setter
 @Getter
-public class ResponseOkData implements MyObject {
+public class ResponseOkData implements MyObject, Response {
 
     private String type;
     private JSONObject data;

@@ -5,15 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
-import matcha.model.MyObject;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class ResponseError implements MyObject, Response {
+public class ResponseOnlyType implements Response {
+
     private String type;
-    private String message;
 
     @Override
     public String toString() {
