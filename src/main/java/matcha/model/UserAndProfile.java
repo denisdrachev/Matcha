@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
+import matcha.user.model.User;
 import org.json.JSONObject;
 
 import java.io.Serializable;

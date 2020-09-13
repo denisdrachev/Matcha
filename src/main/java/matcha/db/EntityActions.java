@@ -1,18 +1,23 @@
 package matcha.db;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.converter.Utils;
 import matcha.mail.Sender;
-import matcha.model.*;
+import matcha.model.Location;
+import matcha.model.MyObject;
+import matcha.model.Profile;
+import matcha.model.UserAndProfile;
 import matcha.response.ResponseError;
 import matcha.response.ResponseOk;
 import matcha.response.ResponseOkData;
-import org.springframework.beans.factory.annotation.Autowired;
+import matcha.user.model.User;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service

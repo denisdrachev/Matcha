@@ -2,9 +2,7 @@ package matcha.mail;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import matcha.model.User;
 import matcha.properties.ConfigProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;

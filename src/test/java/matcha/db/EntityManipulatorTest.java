@@ -1,15 +1,9 @@
 package matcha.db;
 
-import lombok.ToString;
-import matcha.model.Location;
-import matcha.model.User;
+import matcha.user.model.User;
 import org.junit.jupiter.api.Test;
 
-
-import java.util.Calendar;
 import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class EntityManipulatorTest {
 

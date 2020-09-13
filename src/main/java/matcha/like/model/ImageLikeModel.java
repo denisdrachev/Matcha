@@ -1,4 +1,4 @@
-package matcha.model;
+package matcha.like.model;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageLikeEvent implements Serializable {
+public class ImageLikeModel implements Serializable {
 
     private int id;
     private boolean active;

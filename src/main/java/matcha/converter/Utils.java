@@ -1,8 +1,8 @@
 package matcha.converter;
 
 import lombok.SneakyThrows;
-import matcha.model.User;
 import matcha.properties.StringConstants;
+import matcha.user.model.User;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.everit.json.schema.ValidationException;
@@ -18,7 +18,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Utils {
 

@@ -2,8 +2,8 @@ package matcha.db;
 
 import lombok.AllArgsConstructor;
 import matcha.converter.Utils;
-import matcha.model.User;
 import matcha.properties.ConfigProperties;
+import matcha.user.model.User;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

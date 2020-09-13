@@ -9,9 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import matcha.model.ImageElem;
 import matcha.model.OnlyAction;
 import matcha.model.Profile;
-import matcha.model.User;
 import matcha.response.ResponseError;
-import org.json.JSONObject;
+import matcha.user.model.User;
 
 import java.util.List;
 import java.util.Optional;

@@ -21,6 +21,7 @@ public class Select {
     public static String selectUsersCountByLoginAndActivationCode = "SELECT COUNT(*) FROM users WHERE login = ? AND activationCode = ?";
     public static String selectUserAndProfileByActivationCode = "SELECT * FROM users u INNER JOIN profiles p ON u.profileId = p.id WHERE activationCode = ?";
     public static String selectNewChatMessages = "SELECT * FROM chat WHERE toLogin = ? AND fromLogin = ? AND read = FALSE";
+    public static String selectCountAllNewChatMessages = "SELECT * FROM chat WHERE toLogin = ? AND read = FALSE";
     public static String selectChatMessages = "SELECT * FROM chat WHERE toLogin = ? AND fromLogin = ? ORDER BY time DESC LIMIT ?";
     public static String selectFullChatMessages = "SELECT * FROM chat WHERE (toLogin = ? OR toLogin = ?) AND (fromLogin = ? OR fromLogin = ?) ORDER BY time DESC LIMIT ?";
 

@@ -77,4 +77,17 @@ public class ChatEntityManipulator {
             return List.of();
         }
     }
+
+    public List<ChatMessage> getAllNewChatMessages(String toLogin) {
+        log.info("Get all new chat messages toLogin: {}", toLogin);
+        try {
+            List<ChatMessage> result = jdbcTemplate.query(Select.selectCountAllNewChatMessages, new ChatMessageRowMapper(),
+                    toLogin);
+            log.info("Get all new chat messages. Count: {}", result.size());
+            return result;
+        } catch (Exception e) {
+            log.warn("Failed to load all new chat messages");
+            return List.of();
+        }
+    }
 }

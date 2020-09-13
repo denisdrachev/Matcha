@@ -1,6 +1,6 @@
 package matcha.model.rowMapper;
 
-import matcha.model.User;
+import matcha.user.model.User;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

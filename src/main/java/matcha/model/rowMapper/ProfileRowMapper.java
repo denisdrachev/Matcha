@@ -1,15 +1,11 @@
 package matcha.model.rowMapper;
 
-import matcha.converter.Converter;
 import matcha.model.Profile;
-import matcha.model.User;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

@@ -1,7 +1,8 @@
-package matcha.model;
+package matcha.user.model;
 
 import lombok.*;
-import matcha.converter.Converter;
+import matcha.model.Location;
+import matcha.model.MyObject;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -12,7 +13,7 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable, MyObject{
+public class User implements Serializable, MyObject {
 
     private int id;
     private String login;
