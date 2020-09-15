@@ -1,20 +1,16 @@
 package matcha.model.rowMapper;
 
-import matcha.model.ImageElem;
-import matcha.model.Profile;
+import matcha.image.model.ImageModel;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class ImageRowMapper implements RowMapper<ImageElem> {
+public class ImageRowMapper implements RowMapper<ImageModel> {
 
     @Override
-    public ImageElem mapRow(ResultSet rs, int rowNum) throws SQLException {
-        ImageElem imageElem = new ImageElem();
+    public ImageModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+        ImageModel imageElem = new ImageModel();
         imageElem.setId(rs.getInt("id"));
         imageElem.setIndex(rs.getInt("index"));
         imageElem.setSrc(rs.getString("src"));

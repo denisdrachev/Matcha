@@ -3,7 +3,7 @@ package matcha.db;
 import lombok.AllArgsConstructor;
 import matcha.converter.Utils;
 import matcha.properties.ConfigProperties;
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class DefaultInit {
     @DependsOn({"createAllTables"})
     @ConditionalOnProperty(value = "options.users.default.init.active", matchIfMissing = false, havingValue = "true")
     void initDefaultUsers() {
-            User user = new User();
+        UserEntity user = new UserEntity();
             user.setLogin(properties.getUsersDefaultInitLogin());
             Utils.initRegistryUser(user, properties.getUsersDefaultInitPassword());
             user.setActivationCode(properties.getUsersDefaultInitCode());

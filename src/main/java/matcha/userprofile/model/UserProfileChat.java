@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import matcha.chat.model.ChatMessage;
-import matcha.model.ImageElem;
+import matcha.image.model.ImageModel;
 import matcha.response.Response;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class UserProfileChat implements Response {
     private String lname;
     private Integer gender;
     private List<String> tags;
-    private List<ImageElem> images;
+    private List<ImageModel> images;
     private Integer avatar;
     private ChatMessage chatMessages;
 }

@@ -6,16 +6,16 @@ import matcha.db.crud.Drop;
 import matcha.db.crud.Insert;
 import matcha.db.crud.Select;
 import matcha.db.crud.Update;
-import matcha.model.ImageElem;
+import matcha.image.model.ImageModel;
 import matcha.model.Location;
 import matcha.model.MyObject;
-import matcha.model.Profile;
 import matcha.model.rowMapper.ImageRowMapper;
 import matcha.model.rowMapper.LocationRowMapper;
 import matcha.model.rowMapper.ProfileRowMapper;
 import matcha.model.rowMapper.UserRowMapper;
+import matcha.profile.model.ProfileModel;
 import matcha.response.ResponseError;
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -52,13 +52,13 @@ public class EntityManipulator {
     }
 
     //TODO рефакторинг метода
-    public Optional<User> getUserByActivationCode(String activationCode) {
+    public Optional<UserEntity> getUserByActivationCode(String activationCode) {
         try {
-            User user = jdbcTemplate.queryForObject(Select.selectUserByActivationCode,
+            UserEntity user = jdbcTemplate.queryForObject(Select.selectUserByActivationCode,
                     new Object[]{activationCode}, new UserRowMapper());
             System.err.println("USER TIME: " + user.getTime());
             log.info("Get user by Activation Code: ".concat(activationCode).concat(" User: ") + user);
-            Optional<User> userOptional = Optional.ofNullable(user);
+            Optional<UserEntity> userOptional = Optional.ofNullable(user);
             if (userOptional.isPresent()) {
                 user.setTime(Calendar.getInstance().getTime());
             }
@@ -69,8 +69,8 @@ public class EntityManipulator {
         }
     }
 
-    public Optional<User> getUserById(int userId) {
-        User user = jdbcTemplate.queryForObject(Select.selectUserById, User.class, userId);
+    public Optional<UserEntity> getUserById(int userId) {
+        UserEntity user = jdbcTemplate.queryForObject(Select.selectUserById, UserEntity.class, userId);
         log.info("Get user by id: ".concat(String.valueOf(userId)).concat(" User: ") + user);
         return Optional.ofNullable(user);
     }
@@ -78,7 +78,7 @@ public class EntityManipulator {
     public MyObject getUserByLogin(String login) {
         log.info("Get user by login [{}]", login);
         try {
-            User user = jdbcTemplate.queryForObject(Select.selectUserByLogin, new UserRowMapper(), login);
+            UserEntity user = jdbcTemplate.queryForObject(Select.selectUserByLogin, new UserRowMapper(), login);
             log.info("Get user by login result: {}", user);
             return user;
         } catch (Exception e) {
@@ -88,7 +88,14 @@ public class EntityManipulator {
         }
     }
 
-    public Object insertUser(User user) {
+    public UserEntity getUserByLogin1(String login) {
+        log.info("Get user by login [{}]", login);
+        UserEntity user = jdbcTemplate.queryForObject(Select.selectUserByLogin, new UserRowMapper(), login);
+        log.info("Get user by login result: {}", user);
+        return user;
+    }
+
+    public Object insertUser(UserEntity user) {
         log.info("Create user: {}", user);
 //        int update = jdbcTemplate.update(Insert.insertUser,
 //                user.getLogin(), user.getPassword(), user.getActivationCode(), user.getFname(),
@@ -123,7 +130,33 @@ public class EntityManipulator {
         }
     }
 
-    public MyObject updateUserById(User user) {
+    public int insertUser1(UserEntity user) {
+        log.info("Create user: {}", user);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int userId = jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(Insert.insertUser, new String[]{"id"});
+                ps.setString(1, user.getLogin());
+                ps.setBytes(2, user.getPasswordBytes());
+                ps.setString(3, user.getActivationCode());
+                ps.setString(4, user.getFname());
+                ps.setString(5, user.getLname());
+                ps.setString(6, user.getEmail());
+                ps.setBoolean(7, user.isActive());
+                ps.setBoolean(8, user.isBlocked());
+                ps.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
+                ps.setBytes(10, user.getSalt());
+                ps.setInt(11, user.getProfileId());
+                return ps;
+            }
+        }, keyHolder);
+        log.info("Create user result: userId = {}", userId);
+        return userId;
+    }
+
+    public MyObject updateUserById(UserEntity user) {
         log.info("Update user: {}", user);
         try {
             int update = jdbcTemplate.update(Update.updateUserById,
@@ -138,7 +171,22 @@ public class EntityManipulator {
         }
     }
 
-    public Optional<Integer> updateUserByActivationCode(User user) {
+    public MyObject updateUserById1(UserEntity user) {
+        log.info("Update user: {}", user);
+        try {
+            int update = jdbcTemplate.update(Update.updateUserById,
+                    user.getLogin(), user.getActivationCode(),
+                    user.getFname(), user.getLname(), user.getEmail(),
+                    user.isActive(), user.isBlocked(), user.getTime(), user.getProfileId(), user.getId());
+            log.info("Update user result: ".concat(String.valueOf(update)));
+            return MyObject.stub;
+        } catch (Exception e) {
+            log.warn("updateUserById. Failed update user {}", user);
+            return new ResponseError("error", "");
+        }
+    }
+
+    public Optional<Integer> updateUserByActivationCode(UserEntity user) {
         log.info("Update user: ".concat(user.toString()));
         int update = jdbcTemplate.update(Update.updateUserByActivationCode,
                 user.getLogin(),
@@ -171,15 +219,15 @@ public class EntityManipulator {
     }
 
     //TODO рефакторинг метода
-    public Optional<Profile> getProfileById(int profileId) {
+    public Optional<ProfileModel> getProfileById(int profileId) {
 
-        Profile profile = jdbcTemplate.queryForObject(Select.selectProfileById,
+        ProfileModel profile = jdbcTemplate.queryForObject(Select.selectProfileById,
                 new ProfileRowMapper(), profileId);
         log.info("Get profile by id: ".concat(String.valueOf(profileId)).concat(" Profile: ") + profile);
 
         if (profile.getImagesIds() != null && profile.getImagesIds().size() > 0) {
             profile.getImagesIds().forEach(s -> {
-                Optional<ImageElem> imageById = getImageById(s);
+                Optional<ImageModel> imageById = getImageById(s);
                 if (imageById.isPresent()) {
                     profile.getImages().add(imageById.get());
                 } else {
@@ -241,7 +289,7 @@ public class EntityManipulator {
 //        return Optional.of(keyHolder.getKey().intValue());
 //    }
 
-    public Optional<Integer> updateProfileById(Profile profile) {
+    public Optional<Integer> updateProfileById(ProfileModel profile) {
         log.info("Update profile: {}", profile);
 
 //TODO аватар доделать
@@ -277,8 +325,8 @@ public class EntityManipulator {
         return Optional.ofNullable(integer);
     }
 
-    public Optional<ImageElem> getImageById(String imageId) {
-        ImageElem image = jdbcTemplate.queryForObject(Select.selectImageById, new ImageRowMapper(), imageId);
+    public Optional<ImageModel> getImageById(String imageId) {
+        ImageModel image = jdbcTemplate.queryForObject(Select.selectImageById, new ImageRowMapper(), imageId);
         log.info("Get image by id: ".concat(imageId).concat(" Image: ") + image);
         return Optional.ofNullable(image);
     }
@@ -327,7 +375,7 @@ public class EntityManipulator {
 //        return Optional.of(update);
 //    }
 
-    public Optional<Integer> insertImage(ImageElem image) {
+    public Optional<Integer> insertImage(ImageModel image) {
         log.info("Insert image '{}'", image);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int update = jdbcTemplate.update(new PreparedStatementCreator() {
@@ -358,7 +406,14 @@ public class EntityManipulator {
         }
     }
 
-    public Optional<Integer> updateImageById(ImageElem image) {
+    public void insertLocation1(Location location) {
+        log.info("Insert location '{}'", location);
+        int insert = jdbcTemplate.update(Insert.insertLocation, location.getUser(),
+                location.getX(), location.getY(), location.getTime(), location.isActive());
+        log.info("Insert image result: {}", insert);
+    }
+
+    public Optional<Integer> updateImageById(ImageModel image) {
         log.info("Update image: ".concat(image.toString()));
         int update = jdbcTemplate.update(Update.updateImageById, image.getIndex(), image.getSrc(), image.getId());
         log.info("Update image result: ".concat(String.valueOf(update)));

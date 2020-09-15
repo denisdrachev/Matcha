@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import matcha.model.ImageElem;
+import matcha.image.model.ImageModel;
 import matcha.model.OnlyAction;
-import matcha.model.Profile;
+import matcha.profile.model.ProfileModel;
 import matcha.response.ResponseError;
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,36 +30,37 @@ public class Converter {
         return object;
     }
 
-    public static User convertToUser(String json) {
+    public static UserEntity convertToUser(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        User object = null;
+        UserEntity object = null;
         try {
-            object = mapper.readValue(json, User.class);
+            object = mapper.readValue(json, UserEntity.class);
         } catch (JsonProcessingException e) {
             log.error("Error convertToUser. ".concat(e.getMessage()));
         }
         return object;
     }
 
-    public static Profile convertToProfile(String json) {
+    public static ProfileModel convertToProfile(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Profile object = null;
+        ProfileModel object = null;
         try {
-            object = mapper.readValue(json, Profile.class);
+            object = mapper.readValue(json, ProfileModel.class);
         } catch (JsonProcessingException e) {
             log.error("Error convertToProfile. ".concat(e.getMessage()));
         }
         return object;
     }
 
-    public static List<ImageElem> convertToImages(String json) {
+    public static List<ImageModel> convertToImages(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        List<ImageElem> object = null;
+        List<ImageModel> object = null;
         try {
-            object = mapper.readValue(json, new TypeReference<List<ImageElem>>() { });
+            object = mapper.readValue(json, new TypeReference<List<ImageModel>>() {
+            });
 //            object = mapper.readValue(json, List.class);
 
         } catch (JsonProcessingException e) {

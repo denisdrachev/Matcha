@@ -1,0 +1,39 @@
+package matcha.profile.model;
+
+import lombok.*;
+import matcha.image.model.ImageModel;
+import matcha.userprofile.model.UserAndProfileUpdateModel;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProfileModel implements Serializable {
+
+    private Integer id;
+    private Integer age = null;
+    private Integer gender = null;
+    private List<Integer> preference = new ArrayList<>();
+    private String biography;
+    private List<String> tags = new ArrayList<>();
+    private List<ImageModel> images = new ArrayList<>();
+    //    @ToString.Exclude
+    private List<String> imagesIds;
+    private Integer avatar = null;
+
+    public ProfileModel(UserAndProfileUpdateModel userAndProfileUpdateModel) {
+        this.age = userAndProfileUpdateModel.getAge();
+        this.gender = userAndProfileUpdateModel.getGender();
+        this.preference = userAndProfileUpdateModel.getPreference();
+        this.biography = userAndProfileUpdateModel.getBiography();
+        this.tags = userAndProfileUpdateModel.getTags();
+        this.images = userAndProfileUpdateModel.getImages();
+//        this.imagesIds = userAndProfileUpdateModel.get();
+        this.avatar = userAndProfileUpdateModel.getAvatar();
+    }
+}

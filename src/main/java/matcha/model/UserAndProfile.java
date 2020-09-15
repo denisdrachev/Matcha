@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
-import matcha.user.model.User;
+import matcha.image.model.ImageModel;
+import matcha.profile.model.ProfileModel;
+import matcha.user.model.UserEntity;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -27,12 +29,12 @@ public class UserAndProfile implements Serializable {
     private List<Integer> preference;
     private String biography;
     private List<String> tags;
-    private List<ImageElem> images;
+    private List<ImageModel> images;
     private Integer avatar = -1;
     private Date time;
     private Location location;
 
-    public UserAndProfile(User user, Profile profile) {
+    public UserAndProfile(UserEntity user, ProfileModel profile) {
         login = user.getLogin();
         fname = user.getFname();
         lname = user.getLname();

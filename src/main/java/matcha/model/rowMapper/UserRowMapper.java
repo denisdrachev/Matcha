@@ -1,15 +1,15 @@
 package matcha.model.rowMapper;
 
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRowMapper implements RowMapper<User> {
+public class UserRowMapper implements RowMapper<UserEntity> {
     @Override
-    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-        User user = new User();
+    public UserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+        UserEntity user = new UserEntity();
         user.setId(rs.getInt("id"));
         user.setFname(rs.getString("fname"));
         user.setLname(rs.getString("lname"));

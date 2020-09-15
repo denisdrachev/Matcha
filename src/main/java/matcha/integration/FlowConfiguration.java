@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import matcha.converter.Converter;
 import matcha.converter.Utils;
 import matcha.db.EntityActions;
-import matcha.model.Profile;
+import matcha.profile.model.ProfileModel;
 import matcha.properties.*;
 import matcha.response.ResponseError;
 import matcha.response.ResponseOk;
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 import matcha.validator.ValidatorFactory;
 import org.everit.json.schema.ValidationException;
 import org.springframework.context.annotation.Bean;
@@ -118,7 +118,7 @@ public class FlowConfiguration {
         Object o = validateOnlyBySchema(schemaName, json);
         if (o instanceof Boolean) {
             try {
-                User user = Converter.convertToUser(json);
+                UserEntity user = Converter.convertToUser(json);
                 final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
                 Utils.initRegistryUser(user, node.get("password").asText());
                 user.setActive(configProperties.isUsersDefaultActive());
@@ -179,7 +179,7 @@ public class FlowConfiguration {
         if (o instanceof Boolean) {
             try {
                 final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
-                User user = Converter.convertToUser(json);
+                UserEntity user = Converter.convertToUser(json);
                 //проверка location. Если там ip, то найти его расположение, иначе - ничего не делать
                 o = entityActions.userLogin(user.getLogin(), user.getPassword(), user.getLocation());
             } catch (Exception e) {
@@ -193,8 +193,8 @@ public class FlowConfiguration {
         Object o = validateOnlyBySchema(schemaName, json);
         if (o instanceof Boolean) {
             try {
-                User user = Converter.convertToUser(json);
-                Profile profile = Converter.convertToProfile(json);
+                UserEntity user = Converter.convertToUser(json);
+                ProfileModel profile = Converter.convertToProfile(json);
                 if (profile.getAvatar() < 0 && profile.getImages() != null && profile.getImages().size() > 0
                         || profile.getAvatar() >= 0 && profile.getImages() == null
                         || profile.getAvatar() >= 0 && profile.getImages() != null && profile.getImages().size() == 0) {
@@ -231,7 +231,7 @@ public class FlowConfiguration {
         Object o = validateOnlyBySchema(schemaName, json);
         if (o instanceof Boolean) {
             try {
-                User user = Converter.convertToUser(json);
+                UserEntity user = Converter.convertToUser(json);
                 o = entityActions.profileGet(user.getLogin());
             } catch (Exception e) {
                 log.error("Error. Error profileGetPrepare: [{}] [{}]", json, e.getMessage());

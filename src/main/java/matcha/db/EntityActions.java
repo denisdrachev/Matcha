@@ -3,15 +3,15 @@ package matcha.db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.converter.Utils;
-import matcha.mail.Sender;
+import matcha.mail.MailService;
 import matcha.model.Location;
 import matcha.model.MyObject;
-import matcha.model.Profile;
 import matcha.model.UserAndProfile;
+import matcha.profile.model.ProfileModel;
 import matcha.response.ResponseError;
 import matcha.response.ResponseOk;
 import matcha.response.ResponseOkData;
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -25,9 +25,9 @@ import java.util.UUID;
 public class EntityActions {
 
     private final EntityManipulator entityManipulator;
-    private final Sender mailSender;
+    private final MailService mailMailService;
 
-    public Object userRegistry(User user) {
+    public Object userRegistry(UserEntity user) {
 
         Optional<Integer> userExist = entityManipulator.getUserCountByLogin(user.getLogin());
         if (userExist.isEmpty() || userExist.get() != 0) {
@@ -58,7 +58,7 @@ public class EntityActions {
             entityManipulator.insertLocations(user.getLocation());
         }
 
-        boolean b = mailSender.sendRegistrationMail(user.getEmail(), user.getActivationCode());
+        boolean b = mailMailService.sendRegistrationMail(user.getEmail(), user.getActivationCode());
         if (!b) {
             Optional<Integer> userCountByLogin = entityManipulator.getUserCountByLogin(user.getLogin());
             if (userCountByLogin.isPresent() && userCountByLogin.get() == 1) {
@@ -103,7 +103,7 @@ public class EntityActions {
         Optional<Integer> userCountByActivationCode = entityManipulator.getUserCountByActivationCode(uuid);
         if (userCountByActivationCode.isEmpty() || userCountByActivationCode.get() != 1)
             return false;
-        Optional<User> userByActivationCode = entityManipulator.getUserByActivationCode(uuid);
+        Optional<UserEntity> userByActivationCode = entityManipulator.getUserByActivationCode(uuid);
         if (userByActivationCode.isEmpty())
             return false;
         userByActivationCode.get().setActivationCode(null);
@@ -117,7 +117,7 @@ public class EntityActions {
         MyObject userByLoginObject = entityManipulator.getUserByLogin(login);
         if (userByLoginObject instanceof ResponseError)
             return userByLoginObject;
-        User user = (User) userByLoginObject;
+        UserEntity user = (UserEntity) userByLoginObject;
         location.setUser(user.getId());
         entityManipulator.insertLocations(location);
 
@@ -143,9 +143,9 @@ public class EntityActions {
     }
 
     //TODO подумать, мб переделать, чтобы изолировать от получения пользователя из бд
-    public Object userUpdate(User user) {
+    public Object userUpdate(UserEntity user) {
 
-        Optional<User> userByActivationCode = entityManipulator.getUserByActivationCode(user.getActivationCode());
+        Optional<UserEntity> userByActivationCode = entityManipulator.getUserByActivationCode(user.getActivationCode());
 
         if (userByActivationCode.isEmpty()) {
             log.warn("User with activationCode '{}' not found!", user.getActivationCode());
@@ -182,9 +182,9 @@ public class EntityActions {
         return entityManipulator.updateUserByActivationCode(user);
     }
 
-    public Object profileSave(Profile profile) {
+    public Object profileSave(ProfileModel profile) {
 
-        Optional<Profile> profileById = entityManipulator.getProfileById(profile.getId());
+        Optional<ProfileModel> profileById = entityManipulator.getProfileById(profile.getId());
         if (profileById.isEmpty()) {
             log.error("profileSave. Error load profile images '{}'", profile);
             return new ResponseError("error", "Ошибка! Не удалось сохранить профиль!");
@@ -256,10 +256,10 @@ public class EntityActions {
         if (userByLogin instanceof ResponseError)
             return userByLogin;
 
-        User user = (User) userByLogin;
+        UserEntity user = (UserEntity) userByLogin;
         user.setLocation(entityManipulator.getActiveLocationByLogin(user.getId()));
 
-        Optional<Profile> profileById = entityManipulator.getProfileById(user.getProfileId());
+        Optional<ProfileModel> profileById = entityManipulator.getProfileById(user.getProfileId());
         if (profileById.isEmpty()) {
             log.error("profileGet. Error load profile for user '{}'", user);
             return new ResponseError("error", "Ошибка! Не удалось загрузить профиль!");

@@ -2,7 +2,7 @@ package matcha.converter;
 
 import lombok.SneakyThrows;
 import matcha.properties.StringConstants;
-import matcha.user.model.User;
+import matcha.user.model.UserEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.everit.json.schema.ValidationException;
@@ -51,7 +51,7 @@ public class Utils {
         return salt;
     }
 
-    public static User initRegistryUser(User user, String password) {
+    public static UserEntity initRegistryUser(UserEntity user, String password) {
         user.setActivationCode(UUID.randomUUID().toString());
         user.setSalt(Utils.getSalt());
         user.setPasswordBytes(Utils.getPrepearPassword(password, user.getSalt()));

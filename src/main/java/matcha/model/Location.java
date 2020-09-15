@@ -3,20 +3,22 @@ package matcha.model;
 import lombok.*;
 import matcha.converter.Converter;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Location implements Serializable {
 
     private int id;
     private int user;
+    @NotNull(message = "Поле location.x не может быть пустым")
     private Double x;
+    @NotNull(message = "Поле location.y не может быть пустым")
     private Double y;
     @ToString.Exclude
     private boolean active = false;
