@@ -1,20 +1,19 @@
 package matcha.profile.model;
 
 import lombok.*;
-import matcha.image.model.Image;
+import matcha.image.model.ImageModel;
 import matcha.userprofile.model.UserInfoModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileModel implements Serializable {
+public class ProfileByLoginModel implements Serializable {
 
     private Integer id;
     private Integer age = null;
@@ -22,26 +21,19 @@ public class ProfileModel implements Serializable {
     private List<Integer> preference = new ArrayList<>();
     private String biography;
     private List<String> tags = new ArrayList<>();
-    private List<Image> images = new ArrayList<>();
+    private List<ImageModel> images = new ArrayList<>();
+    //    @ToString.Exclude
+    private List<String> imagesIds;
+    private Integer avatar = null;
 
-    public ProfileModel(UserInfoModel userAndProfileUpdateModel) {
+    public ProfileByLoginModel(UserInfoModel userAndProfileUpdateModel) {
         this.age = userAndProfileUpdateModel.getAge();
         this.gender = userAndProfileUpdateModel.getGender();
         this.preference = userAndProfileUpdateModel.getPreference();
         this.biography = userAndProfileUpdateModel.getBiography();
         this.tags = userAndProfileUpdateModel.getTags();
         this.images = userAndProfileUpdateModel.getImages();
-    }
-
-    public String getPreference() {
-        String newPreference = null;
-        newPreference = preference.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-        return newPreference;
-    }
-
-    public String getTags() {
-        return String.join(",", tags);
+//        this.imagesIds = userAndProfileUpdateModel.get();
+        this.avatar = userAndProfileUpdateModel.getAvatar();
     }
 }

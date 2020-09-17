@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,11 +22,11 @@ public class ProfileRowMapper implements RowMapper<ProfileModel> {
             profile.setPreference(Stream.of(rs.getString("preference").split(","))
                     .map(Integer::parseInt).collect(Collectors.toList()));
 
-        if (rs.getString("images") != null && !rs.getString("images").isEmpty()) {
-            profile.setImagesIds(Stream.of(rs.getString("images").split(",")).collect(Collectors.toList()));
-        } else {
-            profile.setImagesIds(new ArrayList<>());
-        }
+//        if (rs.getString("images") != null && !rs.getString("images").isEmpty()) {
+//            profile.setImagesIds(Stream.of(rs.getString("images").split(",")).collect(Collectors.toList()));
+//        } else {
+//            profile.setImagesIds(new ArrayList<>());
+//        }
 
         if (rs.getString("tags") != null)
             profile.setTags(Arrays.asList(rs.getString("tags").split(",")));

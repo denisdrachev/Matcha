@@ -2,7 +2,7 @@ package matcha.chat.service;
 
 import lombok.AllArgsConstructor;
 import matcha.chat.manipulation.ChatManipulator;
-import matcha.chat.model.ChatMessage;
+import matcha.chat.model.*;
 import matcha.response.Response;
 import matcha.userprofile.model.UserProfileChat;
 import matcha.userprofile.service.UserProfileService;
@@ -21,8 +21,7 @@ public class ChatService implements ChatInterface {
     private ValidationMessageService validationMessageService;
 
     @Override
-    public Response saveMessage(String toLogin, String fromLogin, String message) {
-        ChatMessage chatMessage = new ChatMessage(toLogin, fromLogin, message);
+    public Response saveMessage(ChatMessageSave chatMessage) {
         chatManipulator.insertChatMessage(chatMessage);
         return validationMessageService.prepareMessageOkOnlyType();
     }
@@ -38,8 +37,9 @@ public class ChatService implements ChatInterface {
     }
 
     @Override
-    public Response getFullMessages(String toLogin, String fromLogin, int limit) {
-        List<ChatMessage> chatMessages = chatManipulator.getFullChatMessages(toLogin, fromLogin, limit);
+    public Response getFullMessages(ChatMessageFull message) {
+        List<ChatMessage> chatMessages =
+                chatManipulator.getFullChatMessages(message.getToLogin(), message.getFromLogin(), message.getLimit());
         chatMessages.stream()
                 .filter(chatMessage -> !chatMessage.isRead())
                 .forEach(chatManipulator::updateChatMessage);
@@ -47,21 +47,26 @@ public class ChatService implements ChatInterface {
     }
 
     @Override
-    public Response getNewMessages(String toLogin, String fromLogin, int isRead) {
-        List<ChatMessage> chatMessages = chatManipulator.getNewChatMessages(toLogin, fromLogin);
-        if (isRead != 0)
+    public Response getNewMessages(ChatNewMessageFromUser message) {
+        List<ChatMessage> chatMessages = chatManipulator.getNewChatMessages(message.getToLogin(), message.getFromLogin());
+        if (message.getIsRead() != 0)
             chatMessages.forEach(chatManipulator::updateChatMessage);
         return validationMessageService.prepareMessageOkDataList(chatMessages);
     }
 
     @Override
-    public Response getAllNewMessages(String toLogin) {
-        List<ChatMessage> chatMessages = chatManipulator.getAllNewChatMessages(toLogin);
+    public Response getAllNewMessages(ChatAllNewMessage message) {
+        List<ChatMessage> chatMessages = chatManipulator.getAllNewChatMessages(message.getToLogin());
         List<UserProfileChat> collect = chatMessages.stream().map(chatMessage -> {
             UserProfileChat chatUserProfile = userProfileService.getChatUserProfile(chatMessage.getFromLogin());
             chatUserProfile.setChatMessages(chatMessage);
             return chatUserProfile;
         }).collect(Collectors.toList());
         return validationMessageService.prepareMessageOkDataList(collect);
+    }
+
+    public void checkChatUsersConnected(String toLogin, String fromLogin) {
+        //пользователь toLogin лайнул хоть одну фотку пользователя fromLogin
+        //пользователь fromLogin лайнул хоть одну фотку пользователя toLogin
     }
 }

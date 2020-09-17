@@ -2,6 +2,7 @@ package matcha.location.manipulation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import matcha.exception.db.location.GetActiveLocationByLoginException;
 import matcha.location.db.LocationDB;
 import matcha.mail.MailService;
 import matcha.model.Location;
@@ -22,8 +23,12 @@ public class LocationManipulator {
     private final MailService mailService;
     private final ValidationMessageService validationMessageService;
 
-    public Location getActiveLocationByLogin(Integer userId) {
-        return locationDB.getActiveLocationByLogin(userId);
+    public Location getLocationByUserIdAndActive(Integer userId) {
+        try {
+            return locationDB.getLocationByUserIdAndActive(userId);
+        } catch (GetActiveLocationByLoginException e) {
+            return new Location();
+        }
     }
 
 }

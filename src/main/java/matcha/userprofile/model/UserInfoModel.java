@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
-import matcha.image.model.ImageModel;
+import matcha.image.model.Image;
 import matcha.model.Location;
 import org.json.JSONObject;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAndProfileUpdateModel implements Serializable {
+public class UserInfoModel implements Serializable {
 
     @NotBlank(message = "Значение поля 'login' не может быть пустым.")
     private String login;
@@ -46,7 +46,7 @@ public class UserAndProfileUpdateModel implements Serializable {
     @NotNull(message = "Значение поля 'tags' не может быть пустым.")
     private List<String> tags;
     @NotNull(message = "Значение поля 'images' не может быть пустым.")
-    private List<ImageModel> images;
+    private List<Image> images;
     @NotNull(message = "Значение поля 'avatar' не может быть пустым.")
     private Integer avatar = -1;
     private Date time = Calendar.getInstance().getTime();

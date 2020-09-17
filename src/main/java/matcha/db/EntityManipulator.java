@@ -346,7 +346,7 @@ public class EntityManipulator {
     public Location getActiveLocationByLogin(Integer userId) {
         log.info("Get active location by login {}...", userId);
         try {
-            Location query = jdbcTemplate.queryForObject(Select.selectLocationByLoginAndActive,
+            Location query = jdbcTemplate.queryForObject(Select.selectLocationByUserIdAndActive,
                     new LocationRowMapper(), userId);
             log.info("Get active location by login done. Result: {}", query);
             return query;

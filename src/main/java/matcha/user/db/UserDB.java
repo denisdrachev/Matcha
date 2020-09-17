@@ -114,7 +114,7 @@ public class UserDB {
     }
 
     //TODO рефакторинг метода
-    public UserEntity getUserByActivationCode(String activationCode) {
+    public UserEntity getUserByToken(String activationCode) {
         log.info("Get user by Activation Code. activationCode: {}", activationCode);
         try {
             UserEntity user = jdbcTemplate.queryForObject(Select.selectUserByActivationCode,
@@ -125,6 +125,17 @@ public class UserDB {
         } catch (Exception e) {
             log.info("getUserByActivationCode. User with activation code {} not found", activationCode);
             //мб другое искючение тут?
+            throw new UserAuthException();
+        }
+    }
+
+    public void checkUserByActivationCode(String token) {
+        log.info("Check user by Activation Code. activationCode: {}", token);
+        try {
+            Integer count = jdbcTemplate.queryForObject(Select.selectUsersCountByActivationCode, Integer.class, token);
+            log.info("Check user by Activation Code. Result user: {}", count);
+        } catch (Exception e) {
+            log.info("checkUserByActivationCode. User with activation code {} not found", token);
             throw new UserAuthException();
         }
     }

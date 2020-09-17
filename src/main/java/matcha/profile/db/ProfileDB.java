@@ -40,8 +40,6 @@ public class ProfileDB {
                     ps.setNull(3, Types.VARCHAR);
                     ps.setNull(4, Types.VARCHAR);
                     ps.setNull(5, Types.VARCHAR);
-                    ps.setNull(6, Types.VARCHAR);
-                    ps.setNull(7, Types.VARCHAR);
                     return ps;
                 }
             }, keyHolder);
@@ -67,25 +65,24 @@ public class ProfileDB {
     }
 
     public ProfileModel getProfileById(int profileId) {
-        log.info("Get profile by ID. profileId: {}", profileId);
+        log.info("Get profile by ID: {}", profileId);
         try {
             ProfileModel profile = jdbcTemplate.queryForObject(Select.selectProfileById,
                     new ProfileRowMapper(), profileId);
-            log.info("Get profile by id: ".concat(String.valueOf(profileId)).concat(" Profile: ") + profile);
+            log.info("Get profile by ID:{} result:{}", profileId, profile);
             return profile;
         } catch (Exception e) {
             log.warn("Exception. getProfileById: {}", e.getMessage());
-            throw new GetProfileByIdDBException();
+            throw new GetProfileByIdDBException("Ошибка. Не удалось загрузить профиль");
         }
     }
 
-    //TODO вынести лишний функционал
-    public void updateProfileById(ProfileModel profile, String preference, String imagesIds) {
+    public void updateProfileById(ProfileModel profile) {
         log.info("Update profile by ID. profile: {}", profile);
         try {
             int update = jdbcTemplate.update(Update.updateProfileById,
-                    profile.getAge(), profile.getGender(), preference, profile.getBiography(),
-                    String.join(",", profile.getTags()), imagesIds, profile.getAvatar(), profile.getId());
+                    profile.getAge(), profile.getGender(), profile.getPreference(),
+                    profile.getBiography(), profile.getTags(), profile.getId());
             log.info("Update profile result: {}", update);
         } catch (Exception e) {
             log.warn("Exception. updateProfileById: {}", e.getMessage());

@@ -1,8 +1,12 @@
 package matcha.image.service;
 
-import matcha.image.model.ImageModel;
+import matcha.image.model.Image;
+
+import java.util.List;
 
 interface ImageInterface {
 
-    Integer insertImage(ImageModel image) throws Exception;
+    void saveImage(Image image);
+
+    List<Image> getImagesByUserId(int userId);
 }

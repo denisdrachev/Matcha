@@ -3,7 +3,7 @@ package matcha.user.model;
 import lombok.*;
 import matcha.model.Location;
 import matcha.model.MyObject;
-import matcha.userprofile.model.UserAndProfileUpdateModel;
+import matcha.userprofile.model.UserInfoModel;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -41,7 +41,7 @@ public class UserEntity implements Serializable, MyObject {
         this.time = userRegistry.getTime();
     }
 
-    public UserEntity(UserAndProfileUpdateModel userRegistry) {
+    public UserEntity(UserInfoModel userRegistry) {
         this.email = userRegistry.getEmail();
         this.fname = userRegistry.getFname();
         this.lname = userRegistry.getLname();

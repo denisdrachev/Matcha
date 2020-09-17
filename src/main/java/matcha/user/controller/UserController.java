@@ -3,7 +3,7 @@ package matcha.user.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.response.Response;
-import matcha.user.model.UserLogin;
+import matcha.user.model.UserInfo;
 import matcha.user.model.UserRegistry;
 import matcha.user.service.UserService;
 import matcha.validator.ValidationMessageService;
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping(value = "login1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Response login(@Valid @RequestBody UserLogin user, BindingResult bindingResult) {
+    public Response login(@Valid @RequestBody UserInfo user, BindingResult bindingResult) {
         log.info("Income registration request. User: {}", user);
         return bindingResult.hasErrors()
                 ? validationMessageService.prepareValidateMessage(bindingResult)

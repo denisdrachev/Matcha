@@ -1,19 +1,21 @@
 package matcha.model.rowMapper;
 
-import matcha.image.model.ImageModel;
+import matcha.image.model.Image;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ImageRowMapper implements RowMapper<ImageModel> {
+public class ImageRowMapper implements RowMapper<Image> {
 
     @Override
-    public ImageModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-        ImageModel imageElem = new ImageModel();
-        imageElem.setId(rs.getInt("id"));
-        imageElem.setIndex(rs.getInt("index"));
-        imageElem.setSrc(rs.getString("src"));
-        return imageElem;
+    public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Image image = new Image();
+        image.setId(rs.getInt("id"));
+        image.setIndex(rs.getInt("index"));
+        image.setSrc(rs.getString("src"));
+        image.setAvatar(rs.getBoolean("avatar"));
+        image.setUserId(rs.getInt("userId"));
+        return image;
     }
 }

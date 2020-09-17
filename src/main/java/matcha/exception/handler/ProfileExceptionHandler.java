@@ -1,8 +1,10 @@
 package matcha.exception.handler;
 
 import lombok.Data;
+import matcha.exception.context.UserAlreadyExistException;
 import matcha.exception.db.GetProfileByIdDBException;
 import matcha.exception.db.location.GetActiveLocationByLoginException;
+import matcha.exception.service.UserRegistryException;
 import matcha.exception.user.UserAuthException;
 import matcha.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -15,12 +17,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ProfileExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(GetProfileByIdDBException.class)
-    protected ResponseEntity<AwesomeException> handleThereIsNoSuchUserException() {
-        return new ResponseEntity<>(new AwesomeException("Профиль не найден"), HttpStatus.OK);
-    }
+//    @ExceptionHandler(GetProfileByIdDBException.class)
+//    protected ResponseEntity<AwesomeException> handleThereIsNoSuchUserException() {
+//        return new ResponseEntity<>(new AwesomeException("Профиль не найден"), HttpStatus.OK);
+//    }
 
-    @ExceptionHandler({UserNotFoundException.class, UserAuthException.class})
+    @ExceptionHandler({UserNotFoundException.class, UserAuthException.class, UserRegistryException.class,
+            UserAlreadyExistException.class, GetProfileByIdDBException.class})
     protected ResponseEntity<AwesomeException> handleUserNotFoundException(Exception e) {
         return new ResponseEntity<>(new AwesomeException(e.getMessage()), HttpStatus.OK);
     }

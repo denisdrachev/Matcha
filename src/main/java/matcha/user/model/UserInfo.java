@@ -16,7 +16,7 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLogin implements Serializable, MyObject {
+public class UserInfo implements Serializable, MyObject {
 
     @NotBlank(message = "Поле 'login' не может быть пустым")
     private String login;

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.chat.db.ChatDB;
 import matcha.chat.model.ChatMessage;
+import matcha.chat.model.ChatMessageSave;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class ChatManipulator {
 
     private final ChatDB chatDB;
 
-    public void insertChatMessage(ChatMessage chatMessage) {
+    public void insertChatMessage(ChatMessageSave chatMessage) {
         chatDB.insertChatMessage(chatMessage);
     }
 

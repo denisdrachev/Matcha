@@ -2,10 +2,7 @@ package matcha.validator;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import matcha.response.ResponseDataList;
-import matcha.response.ResponseError;
-import matcha.response.ResponseOkData;
-import matcha.response.ResponseOnlyType;
+import matcha.response.*;
 import org.json.JSONObject;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Service;
@@ -47,6 +44,10 @@ public class ValidationMessageService {
 
     public ResponseOkData prepareMessageOkData(JSONObject o) {
         return new ResponseOkData("ok", o);
+    }
+
+    public ResponseOkDataObject prepareMessageOkData(Object o) {
+        return new ResponseOkDataObject("ok", o);
     }
 
     public ResponseDataList prepareMessageOkDataList(List list) {

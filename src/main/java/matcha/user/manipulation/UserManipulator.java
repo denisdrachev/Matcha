@@ -13,15 +13,13 @@ import matcha.exception.user.UserLoginException;
 import matcha.exception.user.UserLoginOrPasswordIncorrectException;
 import matcha.location.db.LocationDB;
 import matcha.location.manipulation.LocationManipulator;
-import matcha.mail.MailService;
 import matcha.model.Location;
-import matcha.profile.db.ProfileDB;
+import matcha.profile.manipulation.ProfileManipulator;
 import matcha.response.Response;
 import matcha.response.ResponseOk;
 import matcha.user.db.UserDB;
 import matcha.user.model.UserEntity;
-import matcha.user.model.UserLogin;
-import matcha.validator.ValidationService;
+import matcha.user.model.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -35,9 +33,7 @@ public class UserManipulator {
     private final UserDB userDB;
     private final LocationDB locationDB;
     private final LocationManipulator locationManipulator;
-    private final ProfileDB profileDB;
-    private final MailService mailService;
-    private final ValidationService validationService;
+    private final ProfileManipulator profileManipulator;
 
     public void userRegistry(UserEntity user) {
         try {
@@ -47,14 +43,14 @@ public class UserManipulator {
                 throw new UserAlreadyExistException("Пользователь с логином " + user.getLogin() + " уже существует.");
             }
 
-            Integer emptyProfile = profileDB.insertEmptyProfile();
+            Integer emptyProfile = profileManipulator.insertEmptyProfile();
             user.setProfileId(emptyProfile);
 
             int userCreated = userDB.insertUser(user);
             user.getLocation().setUser(userCreated);
             locationDB.insertLocation(user.getLocation());
 
-            mailService.sendRegistrationMail(user.getEmail(), user.getActivationCode());
+
         } catch (GetUserCountByLoginDBException | InsertEmptyProfileDBException | InsertUserDBException q) {
             throw new UserRegistryException();
         } catch (InsertLocationException | SendRegistrationMailException ile) {
@@ -66,7 +62,8 @@ public class UserManipulator {
         }
     }
 
-    public Response userLogin(UserLogin userLogin) {
+    //TODO рефакторинг
+    public Response userLogin(UserInfo userLogin) {
         try {
             UserEntity user = userDB.getUserByLogin(userLogin.getLogin());
             userLogin.getLocation().setUser(user.getId());
@@ -99,17 +96,17 @@ public class UserManipulator {
 
     //TODO подумать, мб переделать, чтобы изолировать от получения пользователя из бд
     public void userUpdate(UserEntity user) {
-
-        UserEntity userByActivationCode = userDB.getUserByActivationCode(user.getActivationCode());
-
-        user.setProfileId(userByActivationCode.getProfileId());
-        user.getLocation().setUser(userByActivationCode.getId());
-        user.setActive(userByActivationCode.isActive());
-        user.setBlocked(userByActivationCode.isBlocked());
+//
+//        UserEntity userByActivationCode = userDB.getUserByToken(user.getActivationCode());
+//
+//        user.setProfileId(userByActivationCode.getProfileId());
+//        user.getLocation().setUser(userByActivationCode.getId());
+//        user.setActive(userByActivationCode.isActive());
+//        user.setBlocked(userByActivationCode.isBlocked());
 
         if (user.getLocation().isActive()) {
             try {
-                Location locationByLogin = locationManipulator.getActiveLocationByLogin(userByActivationCode.getId());
+                Location locationByLogin = locationManipulator.getLocationByUserIdAndActive(user.getId());
                 locationByLogin.setActive(false);
                 locationDB.updateLocation(locationByLogin);
             } catch (GetActiveLocationByLoginException e) {
@@ -124,5 +121,14 @@ public class UserManipulator {
     public UserEntity getUserByLogin(String login) {
         return userDB.getUserByLogin(login);
     }
+
+    public UserEntity getUserByToken(String token) {
+        return userDB.getUserByToken(token);
+    }
+
+    public void checkUserActivationCode(String token) {
+        userDB.checkUserByActivationCode(token);
+    }
+
 
 }

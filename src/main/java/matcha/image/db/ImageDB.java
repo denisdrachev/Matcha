@@ -6,7 +6,9 @@ import matcha.db.crud.Drop;
 import matcha.db.crud.Insert;
 import matcha.db.crud.Select;
 import matcha.db.crud.Update;
+import matcha.exception.context.image.LoadImageException;
 import matcha.exception.db.image.*;
+import matcha.image.model.Image;
 import matcha.image.model.ImageModel;
 import matcha.model.rowMapper.ImageRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -39,10 +42,10 @@ public class ImageDB {
         }
     }
 
-    public ImageModel getImageById(String imageId) {
+    public Image getImageById(String imageId) {
         log.info("Get image by id: {}", imageId);
         try {
-            ImageModel image = jdbcTemplate.queryForObject(Select.selectImageById, new ImageRowMapper(), imageId);
+            Image image = jdbcTemplate.queryForObject(Select.selectImageById, new ImageRowMapper(), imageId);
             log.info("Get image by id {} result: {}", imageId, image);
             return image;
         } catch (Exception e) {
@@ -52,7 +55,7 @@ public class ImageDB {
     }
 
     public Integer insertImage(ImageModel image) {
-        log.info("Insert image '{}'", image);
+        log.info("Insert image: {}", image);
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(new PreparedStatementCreator() {
@@ -72,12 +75,12 @@ public class ImageDB {
         }
     }
 
-    public Integer updateImageById(ImageModel image) {
-        log.info("Update image: ".concat(image.toString()));
+    public void updateImageById(Image image) {
+        log.info("Update image by id: {}", image);
         try {
-            int update = jdbcTemplate.update(Update.updateImageById, image.getIndex(), image.getSrc(), image.getId());
-            log.info("Update image result: ".concat(String.valueOf(update)));
-            return update;
+            int update = jdbcTemplate.update(Update.updateImageById,
+                    image.getIndex(), image.getSrc(), image.isAvatar(), image.getId());
+            log.info("Update image by id result: {}", update);
         } catch (Exception e) {
             log.warn("Exception. updateImageById: {}", e.getMessage());
             throw new UpdateImageByIdDBException();
@@ -92,6 +95,18 @@ public class ImageDB {
         } catch (Exception e) {
             log.warn("Exception. insertImage: {}", e.getMessage());
             throw new DropImageByIdDBException();
+        }
+    }
+
+    public List<Image> getImagesByUserId(int userId) {
+        log.info("Get images by user id: {}", userId);
+        try {
+            List<Image> images = jdbcTemplate.query(Select.selectImageById, new ImageRowMapper(), userId);
+            log.info("Get images by id result: {}", images);
+            return images;
+        } catch (Exception e) {
+            log.warn("Exception. getImageByUserId: {}", e.getMessage());
+            throw new LoadImageException();
         }
     }
 }

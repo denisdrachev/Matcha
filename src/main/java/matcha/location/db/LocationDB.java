@@ -24,7 +24,7 @@ public class LocationDB {
     private final JdbcTemplate jdbcTemplate;
 
     public List<Location> getLocations() {
-        log.info("Get all locations...");
+        log.info("Get all locations");
         try {
             List<Location> query = jdbcTemplate.query(Select.selectLocations, new LocationRowMapper());
             log.info("Get all locations result count: {}", query.size());
@@ -36,33 +36,33 @@ public class LocationDB {
     }
 
     public void insertLocation(Location location) {
-        log.info("Insert location '{}...'", location);
+        log.info("Insert location: {}", location);
         try {
             int insert = jdbcTemplate.update(Insert.insertLocation, location.getUser(),
                     location.getX(), location.getY(), location.getTime(), location.isActive());
-            log.info("Insert image result: {}", insert);
+            log.info("Insert location result: {}", insert);
         } catch (Exception e) {
             log.warn("Exception. insertLocation: {}", e.getMessage());
             throw new InsertLocationException();
         }
     }
 
-    public Location getActiveLocationByLogin(Integer userId) {
-        log.info("Get active location by login {}...", userId);
+    public Location getLocationByUserIdAndActive(Integer userId) {
+        log.info("Get active location by user id: {}", userId);
         try {
-            Location location = jdbcTemplate.queryForObject(Select.selectLocationByLoginAndActive,
+            Location location = jdbcTemplate.queryForObject(Select.selectLocationByUserIdAndActive,
                     new LocationRowMapper(), userId);
             log.info("Get active location by login done. Result: {}", location);
             return location;
         } catch (Exception e) {
-            log.error("Exception. getActiveLocationByLogin: {}", e.getMessage());
+            log.warn("Exception. getActiveLocationByLogin: {}", e.getMessage());
             throw new GetActiveLocationByLoginException();
         }
     }
 
     public Integer updateLocation(Location location) {
         try {
-            log.info("Update location {}...", location);
+            log.info("Update location {}", location);
             int update = jdbcTemplate.update(Update.updateLocationById, location.isActive(), location.getId());
             log.info("Update location done. Result: {}", update);
             return update;

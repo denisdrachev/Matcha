@@ -3,6 +3,7 @@ package matcha.chat.db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.chat.model.ChatMessage;
+import matcha.chat.model.ChatMessageSave;
 import matcha.db.crud.Insert;
 import matcha.db.crud.Select;
 import matcha.db.crud.Update;
@@ -21,7 +22,7 @@ public class ChatDB {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void insertChatMessage(ChatMessage message) {
+    public void insertChatMessage(ChatMessageSave message) {
         log.info("Insert chat message '{}'", message);
         try {
             int insert = jdbcTemplate.update(Insert.insertChatMessage,
