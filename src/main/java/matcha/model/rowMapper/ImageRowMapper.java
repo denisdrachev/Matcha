@@ -15,7 +15,7 @@ public class ImageRowMapper implements RowMapper<Image> {
         image.setIndex(rs.getInt("index"));
         image.setSrc(rs.getString("src"));
         image.setAvatar(rs.getBoolean("avatar"));
-        image.setUserId(rs.getInt("userId"));
+        image.setProfileId(rs.getInt("profileId"));
         return image;
     }
 }

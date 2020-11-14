@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileModel implements Serializable {
+public class ProfileEntity implements Serializable {
 
     private Integer id;
     private Integer age = null;
@@ -24,7 +24,8 @@ public class ProfileModel implements Serializable {
     private List<String> tags = new ArrayList<>();
     private List<Image> images = new ArrayList<>();
 
-    public ProfileModel(UserInfoModel userAndProfileUpdateModel) {
+    public ProfileEntity(int profileId, UserInfoModel userAndProfileUpdateModel) {
+        this.id = profileId;
         this.age = userAndProfileUpdateModel.getAge();
         this.gender = userAndProfileUpdateModel.getGender();
         this.preference = userAndProfileUpdateModel.getPreference();
@@ -33,7 +34,7 @@ public class ProfileModel implements Serializable {
         this.images = userAndProfileUpdateModel.getImages();
     }
 
-    public String getPreference() {
+    public String getPreferenceAsString() {
         String newPreference = null;
         newPreference = preference.stream()
                 .map(String::valueOf)
@@ -41,7 +42,7 @@ public class ProfileModel implements Serializable {
         return newPreference;
     }
 
-    public String getTags() {
+    public String getTagsAsString() {
         return String.join(",", tags);
     }
 }

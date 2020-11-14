@@ -6,9 +6,13 @@ import matcha.db.crud.Drop;
 import matcha.db.crud.Insert;
 import matcha.db.crud.Select;
 import matcha.db.crud.Update;
-import matcha.exception.db.*;
+import matcha.exception.context.UserRegistrationException;
+import matcha.exception.db.DropProfileByIdDBException;
+import matcha.exception.db.GetProfileByIdDBException;
+import matcha.exception.db.GetProfileCountByIdDBException;
+import matcha.exception.db.UpdateProfileByIdDBException;
 import matcha.model.rowMapper.ProfileRowMapper;
-import matcha.profile.model.ProfileModel;
+import matcha.profile.model.ProfileEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -47,7 +51,7 @@ public class ProfileDB {
             return keyHolder.getKey().intValue();
         } catch (Exception e) {
             log.warn("Exception. insertEmptyProfile: {}", e.getMessage());
-            throw new InsertEmptyProfileDBException();
+            throw new UserRegistrationException();
         }
     }
 
@@ -64,10 +68,10 @@ public class ProfileDB {
         }
     }
 
-    public ProfileModel getProfileById(int profileId) {
+    public ProfileEntity getProfileById(int profileId) {
         log.info("Get profile by ID: {}", profileId);
         try {
-            ProfileModel profile = jdbcTemplate.queryForObject(Select.selectProfileById,
+            ProfileEntity profile = jdbcTemplate.queryForObject(Select.selectProfileById,
                     new ProfileRowMapper(), profileId);
             log.info("Get profile by ID:{} result:{}", profileId, profile);
             return profile;
@@ -77,12 +81,12 @@ public class ProfileDB {
         }
     }
 
-    public void updateProfileById(ProfileModel profile) {
+    public void updateProfileById(ProfileEntity profile) {
         log.info("Update profile by ID. profile: {}", profile);
         try {
             int update = jdbcTemplate.update(Update.updateProfileById,
-                    profile.getAge(), profile.getGender(), profile.getPreference(),
-                    profile.getBiography(), profile.getTags(), profile.getId());
+                    profile.getAge(), profile.getGender(), profile.getPreferenceAsString(),
+                    profile.getBiography(), profile.getTagsAsString(), profile.getId());
             log.info("Update profile result: {}", update);
         } catch (Exception e) {
             log.warn("Exception. updateProfileById: {}", e.getMessage());
@@ -90,12 +94,11 @@ public class ProfileDB {
         }
     }
 
-    public Integer dropProfileById(int id) {
+    public void dropProfileById(int id) {
         log.info("Drop profile by id. id: {}", id);
         try {
             int drop = jdbcTemplate.update(Drop.deleteProfileById, id);
             log.info("Drop profile by id result: {}", drop);
-            return drop;
         } catch (Exception e) {
             log.warn("Exception. dropProfileById: {}", e.getMessage());
             throw new DropProfileByIdDBException();

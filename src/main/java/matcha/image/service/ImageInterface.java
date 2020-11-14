@@ -8,5 +8,5 @@ interface ImageInterface {
 
     void saveImage(Image image);
 
-    List<Image> getImagesByUserId(int userId);
+    List<Image> getImagesByProfileId(int userId);
 }

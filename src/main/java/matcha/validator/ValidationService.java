@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.exception.context.image.ValidateAvatarInImagesException;
 import matcha.exception.context.image.ValidateAvatarIndexInImagesException;
-import matcha.image.model.ImageModel;
+import matcha.image.model.ImageEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ValidationService {
 
-    public void validateAvatarInImages(Integer avatar, List<ImageModel> imageElems) {
+    public void validateAvatarInImages(Integer avatar, List<ImageEntity> imageElems) {
         if (avatar < 0 && imageElems != null && imageElems.size() > 0
                 || avatar >= 0 && imageElems == null
                 || avatar >= 0 && imageElems.size() == 0) {
@@ -23,7 +23,7 @@ public class ValidationService {
         }
     }
 
-    public void validateAvatarIndexInImages(Integer avatar, List<ImageModel> imageElems) {
+    public void validateAvatarIndexInImages(Integer avatar, List<ImageEntity> imageElems) {
         if (imageElems != null && (avatar >= imageElems.size())) {
             log.warn("Error. Avatar value [{}] out of index images [{}]", avatar, imageElems.size());
             throw new ValidateAvatarIndexInImagesException();

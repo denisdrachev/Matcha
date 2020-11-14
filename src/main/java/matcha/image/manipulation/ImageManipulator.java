@@ -19,6 +19,10 @@ public class ImageManipulator {
         imageDB.updateImageById(image);
     }
 
+    public void insertImage(Image image) {
+        imageDB.insertImage(image);
+    }
+
     public Image getImageById(String imageId) {
         return imageDB.getImageById(imageId);
     }
@@ -27,7 +31,11 @@ public class ImageManipulator {
         imageDB.dropImageById(id);
     }
 
-    public List<Image> getImagesByUserId(int userId) {
-        return imageDB.getImagesByUserId(userId);
+    public List<Image> getImagesByProfileId(int profileId) {
+        return imageDB.getImagesByProfileId(profileId);
+    }
+
+    public List<Image> getAllImages() {
+        return imageDB.getAllImages();
     }
 }

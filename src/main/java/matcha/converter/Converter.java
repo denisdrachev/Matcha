@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import matcha.image.model.ImageModel;
+import matcha.image.model.ImageEntity;
 import matcha.model.OnlyAction;
-import matcha.profile.model.ProfileModel;
+import matcha.profile.model.ProfileEntity;
 import matcha.response.ResponseError;
 import matcha.user.model.UserEntity;
 
@@ -42,24 +42,24 @@ public class Converter {
         return object;
     }
 
-    public static ProfileModel convertToProfile(String json) {
+    public static ProfileEntity convertToProfile(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        ProfileModel object = null;
+        ProfileEntity object = null;
         try {
-            object = mapper.readValue(json, ProfileModel.class);
+            object = mapper.readValue(json, ProfileEntity.class);
         } catch (JsonProcessingException e) {
             log.error("Error convertToProfile. ".concat(e.getMessage()));
         }
         return object;
     }
 
-    public static List<ImageModel> convertToImages(String json) {
+    public static List<ImageEntity> convertToImages(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        List<ImageModel> object = null;
+        List<ImageEntity> object = null;
         try {
-            object = mapper.readValue(json, new TypeReference<List<ImageModel>>() {
+            object = mapper.readValue(json, new TypeReference<List<ImageEntity>>() {
             });
 //            object = mapper.readValue(json, List.class);
 

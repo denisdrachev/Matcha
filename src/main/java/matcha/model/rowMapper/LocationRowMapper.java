@@ -1,6 +1,6 @@
 package matcha.model.rowMapper;
 
-import matcha.model.Location;
+import matcha.location.model.Location;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -12,7 +12,7 @@ public class LocationRowMapper implements RowMapper<Location> {
     public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
         Location location = new Location();
         location.setId(rs.getInt("id"));
-        location.setUser(rs.getInt("user"));
+        location.setProfileId(rs.getInt("profileId"));
         location.setX(rs.getDouble("x"));
         location.setY(rs.getDouble("y"));
         location.setActive(rs.getBoolean("active"));

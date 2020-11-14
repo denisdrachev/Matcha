@@ -9,7 +9,6 @@ import matcha.db.crud.Update;
 import matcha.exception.context.image.LoadImageException;
 import matcha.exception.db.image.*;
 import matcha.image.model.Image;
-import matcha.image.model.ImageModel;
 import matcha.model.rowMapper.ImageRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -54,7 +53,7 @@ public class ImageDB {
         }
     }
 
-    public Integer insertImage(ImageModel image) {
+    public Integer insertImage(Image image) {
         log.info("Insert image: {}", image);
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,6 +63,8 @@ public class ImageDB {
                     PreparedStatement ps = connection.prepareStatement(Insert.insertImage, new String[]{"id"});
                     ps.setInt(1, image.getIndex());
                     ps.setString(2, image.getSrc());
+                    ps.setInt(3, image.getProfileId());
+                    ps.setBoolean(4, image.isAvatar());
                     return ps;
                 }
             }, keyHolder);
@@ -78,8 +79,7 @@ public class ImageDB {
     public void updateImageById(Image image) {
         log.info("Update image by id: {}", image);
         try {
-            int update = jdbcTemplate.update(Update.updateImageById,
-                    image.getIndex(), image.getSrc(), image.isAvatar(), image.getId());
+            int update = jdbcTemplate.update(Update.updateImageById, image.getSrc(), image.isAvatar(), image.getId());
             log.info("Update image by id result: {}", update);
         } catch (Exception e) {
             log.warn("Exception. updateImageById: {}", e.getMessage());
@@ -98,14 +98,26 @@ public class ImageDB {
         }
     }
 
-    public List<Image> getImagesByUserId(int userId) {
-        log.info("Get images by user id: {}", userId);
+    public List<Image> getImagesByProfileId(int profileId) {
+        log.info("Get images by profile id: {}", profileId);
         try {
-            List<Image> images = jdbcTemplate.query(Select.selectImageById, new ImageRowMapper(), userId);
-            log.info("Get images by id result: {}", images);
+            List<Image> images = jdbcTemplate.query(Select.selectImageByProfileId, new ImageRowMapper(), profileId);
+            log.info("Get images by id profile: {}", images);
             return images;
         } catch (Exception e) {
-            log.warn("Exception. getImageByUserId: {}", e.getMessage());
+            log.warn("Exception. getImagesByProfileId: {}", e.getMessage());
+            throw new LoadImageException();
+        }
+    }
+
+    public List<Image> getAllImages() {
+        log.info("Get all images");
+        try {
+            List<Image> images = jdbcTemplate.query(Select.selectImages, new ImageRowMapper());
+            log.info("Get all images count: {}", images.size());
+            return images;
+        } catch (Exception e) {
+            log.warn("Exception. getAllImages: {}", e.getMessage());
             throw new LoadImageException();
         }
     }

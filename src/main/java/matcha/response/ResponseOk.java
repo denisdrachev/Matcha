@@ -1,21 +1,19 @@
 package matcha.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
 import matcha.model.MyObject;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
+@RequiredArgsConstructor
 public class ResponseOk implements MyObject, Response {
 
-    private String type;
-    private String token;
-    private String login;
+    private String type = "success";
+    private final String token;
+    private final String login;
 
     @Override
     public String toString() {

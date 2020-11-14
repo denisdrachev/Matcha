@@ -1,7 +1,7 @@
 package matcha.user.model;
 
 import lombok.*;
-import matcha.model.Location;
+import matcha.location.model.Location;
 import matcha.model.MyObject;
 
 import javax.validation.Valid;

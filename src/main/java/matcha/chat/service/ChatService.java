@@ -3,9 +3,12 @@ package matcha.chat.service;
 import lombok.AllArgsConstructor;
 import matcha.chat.manipulation.ChatManipulator;
 import matcha.chat.model.*;
+import matcha.event.model.Event;
+import matcha.event.service.EventService;
 import matcha.response.Response;
 import matcha.userprofile.model.UserProfileChat;
 import matcha.userprofile.service.UserProfileService;
+import matcha.utils.EventType;
 import matcha.validator.ValidationMessageService;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +22,15 @@ public class ChatService implements ChatInterface {
     private ChatManipulator chatManipulator;
     private UserProfileService userProfileService;
     private ValidationMessageService validationMessageService;
+    private EventService eventService;
+
 
     @Override
     public Response saveMessage(ChatMessageSave chatMessage) {
         chatManipulator.insertChatMessage(chatMessage);
+        Event newEvent = new Event(EventType.SEND_MESSAGE, chatMessage.getFromLogin(), false, chatMessage.getToLogin());
+        eventService.saveEvent(newEvent);
+
         return validationMessageService.prepareMessageOkOnlyType();
     }
 

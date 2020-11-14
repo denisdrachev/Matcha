@@ -8,13 +8,15 @@ import matcha.db.crud.Select;
 import matcha.db.crud.Update;
 import matcha.exception.db.DropUserByLoginDBException;
 import matcha.exception.db.GetUserCountByLoginDBException;
-import matcha.exception.db.InsertUserDBException;
+import matcha.exception.db.GetUserProfileIdByLoginDBException;
 import matcha.exception.db.UpdateUserByIdDBException;
+import matcha.exception.service.UserRegistryException;
 import matcha.exception.user.UserAuthException;
 import matcha.exception.user.UserLoginException;
 import matcha.exception.user.UserNotFoundException;
 import matcha.model.rowMapper.UserRowMapper;
 import matcha.user.model.UserEntity;
+import matcha.user.model.UserUpdateEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -84,7 +86,7 @@ public class UserDB {
             return userId;
         } catch (Exception e) {
             log.warn("Exception. insertUser: {}", e.getMessage());
-            throw new InsertUserDBException();
+            throw new UserRegistryException();
         }
     }
 
@@ -123,45 +125,68 @@ public class UserDB {
             user.setTime(Calendar.getInstance().getTime());
             return user;
         } catch (Exception e) {
-            log.info("getUserByActivationCode. User with activation code {} not found", activationCode);
+            log.info("Exception. getUserByToken: {}", e.getMessage());
             //мб другое искючение тут?
             throw new UserAuthException();
         }
     }
 
-    public void checkUserByActivationCode(String token) {
+    public void checkUserByToken(String token) {
         log.info("Check user by Activation Code. activationCode: {}", token);
         try {
             Integer count = jdbcTemplate.queryForObject(Select.selectUsersCountByActivationCode, Integer.class, token);
             log.info("Check user by Activation Code. Result user: {}", count);
         } catch (Exception e) {
-            log.info("checkUserByActivationCode. User with activation code {} not found", token);
+            log.info("Exception. checkUserByToken: {}", e.getMessage());
             throw new UserAuthException();
         }
     }
 
-    public Integer getUserCountByLoginAndActivationCode(String login, String activationCode) {
+    public Integer checkUserByLoginAndToken(String login, String activationCode) {
         log.info("Get user count by login and activation code. login:{} activationCode:{}", login, activationCode);
         try {
             Integer usersCount = jdbcTemplate.queryForObject(Select.selectUsersCountByLoginAndActivationCode, Integer.class, login, activationCode);
             log.info("Get user count by login and activation code result: {}", usersCount);
             return usersCount;
         } catch (Exception e) {
-            log.info("getUserByActivationCode. User count by login {} with activation code {} not found", login, activationCode);
+            log.info("Exception. checkUserByLoginAndToken: {}", e.getMessage());
             throw new UserNotFoundException();
         }
     }
 
-    public void updateUserByActivationCode(UserEntity user) {
-        log.info("Update user by activation code: {}", user);
+    public void updateUserByLogin(UserUpdateEntity user) {
+        log.info("Update user by login: {}", user);
         try {
-            int update = jdbcTemplate.update(Update.updateUserByActivationCode,
-                    user.getLogin(),
-                    user.getFname(), user.getLname(), user.getEmail(),
-                    user.isActive(), user.isBlocked(), user.getTime(), user.getActivationCode());
-            log.info("Update user by activation code result: {}", update);
+            int update = jdbcTemplate.update(Update.updateUserByLogin,
+                    user.getFname(), user.getLname(), user.getEmail(), user.getTime(), user.getLogin());
+            log.info("Update user by login result: {}", update);
         } catch (Exception e) {
+            log.warn("Exception. updateUserByActivationCode: {}", e.getMessage());
             throw new UserLoginException();
+        }
+    }
+
+    public void updateUserByLogin(UserEntity user) {
+        log.info("Update user by login: {}", user);
+        try {
+            int update = jdbcTemplate.update(Update.updateUserByLogin,
+                    user.getLogin(), user.getFname(), user.getLname(), user.getEmail(), user.getTime());
+            log.info("Update user by login result: {}", update);
+        } catch (Exception e) {
+            log.warn("Exception. updateUserByActivationCode: {}", e.getMessage());
+            throw new UserLoginException();
+        }
+    }
+
+    public Integer getUserProfileIdByLogin(String login) {
+        log.info("Get profile id by user login: {}", login);
+        try {
+            Integer profileId = jdbcTemplate.queryForObject(Select.selectUserProfileIdByLogin, Integer.class, login);
+            log.info("Get profile id by user login:{} result:{}", login, profileId);
+            return profileId;
+        } catch (Exception e) {
+            log.warn("Exception. getUserProfileIdByLogin: {}", e.getMessage());
+            throw new GetUserProfileIdByLoginDBException();
         }
     }
 }

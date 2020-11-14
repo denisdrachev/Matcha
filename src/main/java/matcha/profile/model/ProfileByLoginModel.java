@@ -1,7 +1,7 @@
 package matcha.profile.model;
 
 import lombok.*;
-import matcha.image.model.ImageModel;
+import matcha.image.model.Image;
 import matcha.userprofile.model.UserInfoModel;
 
 import java.io.Serializable;
@@ -21,8 +21,7 @@ public class ProfileByLoginModel implements Serializable {
     private List<Integer> preference = new ArrayList<>();
     private String biography;
     private List<String> tags = new ArrayList<>();
-    private List<ImageModel> images = new ArrayList<>();
-    //    @ToString.Exclude
+    private List<Image> images = new ArrayList<>();
     private List<String> imagesIds;
     private Integer avatar = null;
 
@@ -33,7 +32,6 @@ public class ProfileByLoginModel implements Serializable {
         this.biography = userAndProfileUpdateModel.getBiography();
         this.tags = userAndProfileUpdateModel.getTags();
         this.images = userAndProfileUpdateModel.getImages();
-//        this.imagesIds = userAndProfileUpdateModel.get();
         this.avatar = userAndProfileUpdateModel.getAvatar();
     }
 }

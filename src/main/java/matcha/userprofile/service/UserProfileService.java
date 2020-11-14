@@ -3,7 +3,7 @@ package matcha.userprofile.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import matcha.profile.db.ProfileDB;
-import matcha.profile.model.ProfileModel;
+import matcha.profile.model.ProfileEntity;
 import matcha.user.db.UserDB;
 import matcha.user.model.UserEntity;
 import matcha.userprofile.model.UserProfileChat;
@@ -20,7 +20,7 @@ public class UserProfileService implements UserProfileInterface {
     @Override
     public UserProfileChat getChatUserProfile(String login) {
         UserEntity userByLogin = userDB.getUserByLogin(login);
-        ProfileModel profileById = profileDB.getProfileById(userByLogin.getProfileId());
+        ProfileEntity profileById = profileDB.getProfileById(userByLogin.getProfileId());
         return UserProfileChat.builder()
                 .login(userByLogin.getLogin())
                 .fname(userByLogin.getFname())
@@ -28,7 +28,6 @@ public class UserProfileService implements UserProfileInterface {
                 .gender(profileById.getGender())
                 .tags(profileById.getTags())
                 .images(profileById.getImages())
-                .avatar(profileById.getAvatar())
                 .build();
     }
 

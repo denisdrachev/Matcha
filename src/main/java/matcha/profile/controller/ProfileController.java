@@ -2,16 +2,14 @@ package matcha.profile.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import matcha.profile.model.UserProfileWithoutEmail;
+import matcha.image.service.ImageService;
 import matcha.profile.service.ProfileService;
 import matcha.response.Response;
+import matcha.user.service.UserService;
 import matcha.userprofile.model.UserInfoModel;
 import matcha.validator.ValidationMessageService;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @Slf4j
 @AllArgsConstructor
@@ -21,24 +19,21 @@ public class ProfileController {
 
     private ValidationMessageService validationMessageService;
     private ProfileService profileService;
+    private UserService userService;
+    private ImageService imageService;
 
-    @PostMapping(value = "profile-update1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Response profileUpdate(@Valid @RequestBody UserInfoModel userProfile,
-                                  BindingResult bindingResult,
+    @PostMapping(value = "profile-update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Response profileUpdate(@RequestBody UserInfoModel userProfile,
                                   @CookieValue(value = "token") String token) {
         log.info("Request update user profile:{} token:{}", userProfile, token);
-        if (bindingResult.hasErrors())
-            return validationMessageService.prepareValidateMessage(bindingResult);
+        Response response = validationMessageService.validateMessage(userProfile);
+        if (response != null) {
+            return response;
+        }
 
-        profileService.saveUserInfoByToken(token, userProfile);
+        userService.checkUserByLoginAndActivationCode(userProfile.getLogin(), token);
+        imageService.checkImagesIsCorrect(userProfile.getImages());
+        userService.saveUserInfo(userProfile);
         return validationMessageService.prepareMessageOkOnlyType();
     }
-
-    @GetMapping(value = "profile-get1/{login}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Response getUserProfile(@PathVariable String login) {
-        log.info("Request get user profile by login: {}", login);
-        UserProfileWithoutEmail userProfile = profileService.getUserProfile(login);
-        return validationMessageService.prepareMessageOkData(userProfile);
-    }
-
 }

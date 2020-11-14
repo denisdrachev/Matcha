@@ -1,4 +1,4 @@
-package matcha.model;
+package matcha.location.model;
 
 import lombok.*;
 import matcha.converter.Converter;
@@ -15,7 +15,7 @@ import java.util.Date;
 public class Location implements Serializable {
 
     private int id;
-    private int user;
+    private int profileId;
     @NotNull(message = "Поле location.x не может быть пустым")
     private Double x;
     @NotNull(message = "Поле location.y не может быть пустым")
@@ -24,12 +24,12 @@ public class Location implements Serializable {
     private boolean active = false;
     private Date time = Calendar.getInstance().getTime();
 
-    public void setUser(int user) {
-        this.user = user;
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
     }
 
-    public void setUser(Object user) {
-        this.user = (int) user;
+    public void setProfileId(Object user) {
+        this.profileId = (int) user;
     }
 
     @Override

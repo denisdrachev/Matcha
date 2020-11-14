@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageModel {
+@Deprecated
+public class ImageEntity {
 
     private int id;
     private int index;
     private String src;
 
-    public ImageModel(int index, String src) {
+    public ImageEntity(int index, String src) {
         this.index = index;
         this.src = src;
     }

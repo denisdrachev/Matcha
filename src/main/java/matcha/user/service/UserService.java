@@ -2,63 +2,70 @@ package matcha.user.service;
 
 import lombok.AllArgsConstructor;
 import matcha.converter.Utils;
+import matcha.event.model.Event;
+import matcha.event.service.EventService;
+import matcha.location.model.Location;
 import matcha.location.service.LocationService;
 import matcha.mail.MailService;
-import matcha.model.Location;
+import matcha.profile.model.ProfileEntity;
+import matcha.profile.model.UserProfileWithoutEmail;
+import matcha.profile.service.ProfileService;
 import matcha.properties.ConfigProperties;
 import matcha.response.Response;
 import matcha.user.manipulation.UserManipulator;
 import matcha.user.model.UserEntity;
 import matcha.user.model.UserInfo;
 import matcha.user.model.UserRegistry;
-import matcha.validator.ValidationMessageService;
+import matcha.user.model.UserUpdateEntity;
+import matcha.userprofile.model.UserInfoModel;
+import matcha.utils.EventType;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class UserService implements UserInterface {
 
-    private ValidationMessageService validationMessageService;
     private UserManipulator userManipulator;
     private LocationService locationService;
     private ConfigProperties configProperties;
     private final MailService mailService;
+    private final ProfileService profileService;
+    private EventService eventService;
 
-    public Response userRegistration(UserRegistry userRegistry) {
+    public void userRegistration(UserRegistry userRegistry) {
+
+        userManipulator.checkUserExistByLogin(userRegistry.getLogin());
+
+        Integer newProfileId = profileService.createNewProfile();
+
         UserEntity userEntity = new UserEntity(userRegistry);
-        Utils.initRegistryUser(userEntity, userEntity.getPassword());
         userEntity.setActive(configProperties.isUsersDefaultActive());
+        userEntity.setProfileId(newProfileId);
+        Utils.initRegistryUser(userEntity);
         userManipulator.userRegistry(userEntity);
-        //TODO если не удалось отправить сообщение - удалять пользователя
+
         mailService.sendRegistrationMail(userEntity.getEmail(), userEntity.getActivationCode());
-        return validationMessageService.prepareMessageOkOnlyType();
+
+        Event newEvent = new Event(EventType.REGISTRATION, userRegistry.getLogin(), false, "");
+        eventService.saveEvent(newEvent);
+        userRegistry.getLocation().setProfileId(newProfileId);
+        locationService.saveLocation(userRegistry.getLocation());
     }
 
     public Response userLogin(UserInfo user) {
-        return userManipulator.userLogin(user);
+        Response response = userManipulator.userLogin(user);
+        Event newEvent = new Event(EventType.LOGIN, user.getLogin(), false, "");
+        eventService.saveEvent(newEvent);
+        return response;
     }
 
-
     public void checkUserToToken(String token) {
-        userManipulator.checkUserActivationCode(token);
-//        Object o = validateOnlyBySchema(schemaName, json);
-//        if (o instanceof Boolean) {
-//            try {
-//                User user = Converter.convertToUser(json);
-//                final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
-//                Utils.initRegistryUser(user, node.get("password").asText());
-//                user.setActive(configProperties.isUsersDefaultActive());
-//                o = user;
-//            } catch (Exception e) {
-//                log.error("Error. Error mapping json: " + json);
-//            }
-//        }
-//        return o;
+        userManipulator.checkUserByToken(token);
     }
 
     public UserEntity getUserByLogin(String login) {
         UserEntity userByLogin = userManipulator.getUserByLogin(login);
-        Location locationByLogin = locationService.getLocationByLogin(userByLogin.getId());
+        Location locationByLogin = locationService.getLocationByUserId(userByLogin.getId());
         userByLogin.setLocation(locationByLogin);
         return userByLogin;
     }
@@ -67,7 +74,48 @@ public class UserService implements UserInterface {
         return userManipulator.getUserByToken(token);
     }
 
-    public void saveUser(UserEntity user) {
+    public void saveUser(UserUpdateEntity user) {
+        locationService.deactivationLocationByLogin(user.getLogin());
         userManipulator.userUpdate(user);
+    }
+
+    public boolean activationUserByToken(String token) {
+        return userManipulator.activationUserByToken(token);
+    }
+
+    public UserProfileWithoutEmail getUserProfile(String login) {
+        UserEntity user = getUserByLogin(login);
+        Location activeUserLocation = locationService.getLocationByUserId(user.getId());
+        user.setLocation(activeUserLocation);
+        ProfileEntity profileById = profileService.getProfileByIdWithImages(user.getProfileId());
+
+        Event newEvent = new Event(EventType.PROFILE_LOAD, login, false, "");
+        eventService.saveEvent(newEvent);
+
+        return new UserProfileWithoutEmail(user, profileById);
+    }
+
+    //TODO рефакторинг
+    public void saveUserInfo(UserInfoModel userInfo) {
+
+        UserEntity currentUser = getUserByLogin(userInfo.getLogin());
+
+        saveUser(new UserUpdateEntity(userInfo));
+
+        userInfo.getLocation().setProfileId(currentUser.getId());
+        userInfo.getLocation().setActive(true);
+        locationService.saveLocation(userInfo.getLocation());
+
+//        Integer userProfileId = userManipulator.getUserProfileId(userInfo.getLogin());
+        ProfileEntity newProfile = new ProfileEntity(currentUser.getProfileId(), userInfo);
+
+        profileService.updateProfile(currentUser.getProfileId(), newProfile);
+
+        Event newEvent = new Event(EventType.PROFILE_UPDATE, userInfo.getLogin(), false, "");
+        eventService.saveEvent(newEvent);
+    }
+
+    public void checkUserByLoginAndActivationCode(String login, String token) {
+        userManipulator.checkUserByLoginAndActivationCode(login, token);
     }
 }

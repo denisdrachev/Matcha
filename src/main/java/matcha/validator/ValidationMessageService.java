@@ -1,22 +1,29 @@
 package matcha.validator;
 
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import matcha.model.MyObject;
 import matcha.response.*;
 import org.json.JSONObject;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@NoArgsConstructor
 public class ValidationMessageService {
 
-//    private ValidatorFactory validatorFactory;
+    private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private Validator validator = factory.getValidator();
 
     public ResponseError prepareValidateMessage(BindingResult bindingResult) {
         String validatorMessage = bindingResult.getFieldErrors().stream()
@@ -48,6 +55,20 @@ public class ValidationMessageService {
 
     public ResponseOkDataObject prepareMessageOkData(Object o) {
         return new ResponseOkDataObject("ok", o);
+    }
+
+    public Response validateMessage(MyObject myObject) {
+        Set<ConstraintViolation<MyObject>> validate = validator.validate(myObject);
+
+        String validatorMessage = validate.stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+
+        log.info("Validator message: {}", validatorMessage);
+
+        if (validatorMessage.length() > 0)
+            return new ResponseError("error", validatorMessage);
+        return null;
     }
 
     public ResponseDataList prepareMessageOkDataList(List list) {

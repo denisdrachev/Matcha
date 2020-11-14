@@ -2,7 +2,9 @@ package matcha.db.crud;
 
 public class Select {
 
-    public static String selectImage = "SELECT id, index, src FROM images";
+    public static String selectImage = "SELECT id, index, src, profileId, avatar FROM images";
+    public static String selectImages = "SELECT * FROM images";
+    public static String selectEvents = "SELECT * FROM events";
     public static String selectLocation = "SELECT * FROM locations";
     public static String selectRaiting = "SELECT * FROM rating";
     public static String selectBlacklist = "SELECT * FROM blacklist";
@@ -26,10 +28,10 @@ public class Select {
     public static String selectFullChatMessages = "SELECT * FROM chat WHERE (toLogin = ? OR toLogin = ?) AND (fromLogin = ? OR fromLogin = ?) ORDER BY time DESC LIMIT ?";
 
     public static String selectImageById = "SELECT * FROM images WHERE id = ? LIMIT 1";
-    public static String selectImageByUserId = "SELECT * FROM images WHERE userId = ? LIMIT 5";
+    public static String selectImageByProfileId = "SELECT * FROM images WHERE profileId = ? LIMIT 5";
     public static String selectLocationById = "SELECT * FROM locations WHERE id = ? LIMIT 1";
     public static String selectLocationByUser = "SELECT * FROM locations WHERE user = ?";
-    public static String selectLocationByUserIdAndActive = "SELECT * FROM locations WHERE user = ? AND active = TRUE";
+    public static String selectLocationByUserIdAndActive = "SELECT * FROM locations WHERE profileId = ? AND active = TRUE ORDER BY time DESC LIMIT 1";
     public static String selectLocations = "SELECT * FROM locations";
     public static String selectRatingById = "SELECT * FROM rating WHERE id = ? LIMIT 1";
     public static String selectBlacklistById = "SELECT * FROM blacklist WHERE id = ? LIMIT 1";
@@ -38,4 +40,5 @@ public class Select {
     public static String selectUserByLogin = "SELECT * FROM users WHERE login = ? LIMIT 1";
     public static String selectUserById = "SELECT * FROM users WHERE id = ? LIMIT 1";
     public static String selectUserByActivationCode = "SELECT * FROM users WHERE activationCode = ? LIMIT 1";
+    public static String selectUserProfileIdByLogin = "SELECT profileId FROM users WHERE login = ? LIMIT 1";
 }

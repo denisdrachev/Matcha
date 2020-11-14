@@ -3,6 +3,7 @@ package matcha.chat.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import matcha.model.MyObject;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessageFull {
+public class ChatMessageFull implements MyObject {
 
     @NotBlank(message = "Поле 'toLogin' не может быть пустым")
     private String toLogin;

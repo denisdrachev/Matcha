@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import matcha.converter.Converter;
 import matcha.image.model.Image;
-import matcha.model.Location;
+import matcha.location.model.Location;
+import matcha.model.MyObject;
 import org.json.JSONObject;
 
 import javax.validation.Valid;
@@ -22,7 +23,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoModel implements Serializable {
+public class UserInfoModel implements Serializable, MyObject {
 
     @NotBlank(message = "Значение поля 'login' не может быть пустым.")
     private String login;

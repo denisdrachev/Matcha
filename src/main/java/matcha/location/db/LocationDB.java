@@ -9,7 +9,7 @@ import matcha.exception.db.location.GetActiveLocationByLoginException;
 import matcha.exception.db.location.GetLocationsException;
 import matcha.exception.db.location.InsertLocationException;
 import matcha.exception.db.location.UpdateLocationException;
-import matcha.model.Location;
+import matcha.location.model.Location;
 import matcha.model.rowMapper.LocationRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class LocationDB {
     public void insertLocation(Location location) {
         log.info("Insert location: {}", location);
         try {
-            int insert = jdbcTemplate.update(Insert.insertLocation, location.getUser(),
+            int insert = jdbcTemplate.update(Insert.insertLocation, location.getProfileId(),
                     location.getX(), location.getY(), location.getTime(), location.isActive());
             log.info("Insert location result: {}", insert);
         } catch (Exception e) {
@@ -69,6 +69,17 @@ public class LocationDB {
         } catch (Exception e) {
             log.warn("Exception. updateLocation: {}", e.getMessage());
             throw new UpdateLocationException();
+        }
+    }
+
+    public void updateActiveLocationByLogin(boolean isActive, String login) {
+        try {
+            log.info("Update active:{} location by login: {}", isActive, login);
+            int update = jdbcTemplate.update(Update.updateLocationByLogin, isActive, login);
+            log.info("Update active location by login result: {}", update);
+        } catch (Exception e) {
+            log.warn("Exception. updateActiveLocationByLogin: {}", e.getMessage());
+//            throw new UpdateLocationException();
         }
     }
 }

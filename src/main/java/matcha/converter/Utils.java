@@ -51,10 +51,10 @@ public class Utils {
         return salt;
     }
 
-    public static UserEntity initRegistryUser(UserEntity user, String password) {
+    public static UserEntity initRegistryUser(UserEntity user) {
         user.setActivationCode(UUID.randomUUID().toString());
         user.setSalt(Utils.getSalt());
-        user.setPasswordBytes(Utils.getPrepearPassword(password, user.getSalt()));
+        user.setPasswordBytes(Utils.getPrepearPassword(user.getPassword(), user.getSalt()));
         return user;
     }
 

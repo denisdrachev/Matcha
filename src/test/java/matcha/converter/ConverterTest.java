@@ -1,8 +1,8 @@
 package matcha.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import matcha.image.model.ImageModel;
-import matcha.model.Location;
+import matcha.image.model.ImageEntity;
+import matcha.location.model.Location;
 import matcha.model.OnlyAction;
 import matcha.model.UserAndProfile;
 import matcha.user.model.UserEntity;
@@ -44,11 +44,11 @@ class ConverterTest {
     void convertToImages() {
         String originalInput = "test input";
         String encodedString = Base64.getEncoder().encodeToString(originalInput.getBytes());
-        List<ImageModel> imageElems = Arrays.asList(
-                new ImageModel(1, encodedString),
-                new ImageModel(0, encodedString));
+        List<ImageEntity> imageElems = Arrays.asList(
+                new ImageEntity(1, encodedString),
+                new ImageEntity(0, encodedString));
         String value1 = imageElems.toString();
-        List<ImageModel> imageElems1 = Converter.convertToImages(value1);
+        List<ImageEntity> imageElems1 = Converter.convertToImages(value1);
         Assert.assertEquals(imageElems1, imageElems);
     }
 

@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import matcha.image.model.ImageModel;
-import matcha.model.Location;
+import matcha.image.model.Image;
+import matcha.location.model.Location;
 import matcha.user.model.UserEntity;
 
 import java.io.Serializable;
@@ -26,12 +26,11 @@ public class UserProfileWithoutEmail implements Serializable {
     private List<Integer> preference;
     private String biography;
     private List<String> tags;
-    private List<ImageModel> images;
-    private Integer avatar = -1;
+    private List<Image> images;
     private Date time;
     private Location location;
 
-    public UserProfileWithoutEmail(UserEntity user, ProfileModel profile) {
+    public UserProfileWithoutEmail(UserEntity user, ProfileEntity profile) {
         login = user.getLogin();
         fname = user.getFname();
         lname = user.getLname();
@@ -41,7 +40,6 @@ public class UserProfileWithoutEmail implements Serializable {
         biography = profile.getBiography();
         tags = profile.getTags();
         images = profile.getImages();
-        avatar = profile.getAvatar();
         time = user.getTime();
         location = user.getLocation();
     }

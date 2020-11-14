@@ -1,16 +1,12 @@
 package matcha.controller;
 
 import lombok.RequiredArgsConstructor;
-import matcha.db.EntityActions;
-import matcha.model.Location;
-import matcha.properties.Gateways;
+import matcha.location.model.Location;
+import matcha.location.service.LocationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.context.request.WebRequest;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +14,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LocationsController {
 
-    private final EntityActions entityActions;
+    private final LocationService locationService;
 
     @GetMapping("/locations")
-    public String confirmRegistration(WebRequest request, Model model) {
-        List<Location> locationList = entityActions.getLocationList();
+    public String confirmRegistration(Model model) {
+        List<Location> locationList = locationService.getAllLocations();
         if (locationList != null)
             model.addAttribute("name", locationList.stream().map(location -> "<p>" + location + "</p>").collect(Collectors.joining()));
         else

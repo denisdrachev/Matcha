@@ -9,9 +9,8 @@ import matcha.chat.model.ChatNewMessageFromUser;
 import matcha.chat.service.ChatService;
 import matcha.response.Response;
 import matcha.user.service.UserService;
+import matcha.validator.ValidationMessageService;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -22,11 +21,16 @@ public class ChatController {
 
     private ChatService chatService;
     private UserService userService;
+    private ValidationMessageService validationMessageService;
 
     @PostMapping(value = "/chat/save", produces = "application/json")
     public Response postChatMessage(@CookieValue(value = "token") String token,
-                                    @Valid @RequestBody ChatMessageSave message) {
+                                    @RequestBody ChatMessageSave message) {
         log.info("Request save chat message: {}", message);
+        Response response = validationMessageService.validateMessage(message);
+        if (response != null) {
+            return response;
+        }
         userService.checkUserToToken(token);
         return chatService.saveMessage(message);
     }
@@ -40,24 +44,36 @@ public class ChatController {
 
     @GetMapping(value = "chat/full", produces = "application/json")
     public Response getFullMessagesByLimit(@CookieValue(value = "token") String token,
-                                           @Valid @RequestBody ChatMessageFull message) {
+                                           @RequestBody ChatMessageFull message) {
         log.info("Request get full chat messages by limit: {}", message);
+        Response response = validationMessageService.validateMessage(message);
+        if (response != null) {
+            return response;
+        }
         userService.checkUserToToken(token);
         return chatService.getFullMessages(message);
     }
 
     @GetMapping(value = "chat/new", produces = "application/json")
     public Response getNewMessages(@CookieValue(value = "token") String token,
-                                   @Valid @RequestBody ChatNewMessageFromUser message) {
+                                   @RequestBody ChatNewMessageFromUser message) {
         log.info("Request get new message from user: {}", message);
+        Response response = validationMessageService.validateMessage(message);
+        if (response != null) {
+            return response;
+        }
         userService.checkUserToToken(token);
         return chatService.getNewMessages(message);
     }
 
     @GetMapping(value = "new/{toLogin}", produces = "application/json")
     public Response getAllNewMessages(@CookieValue(value = "token") String token,
-                                      @Valid @RequestBody ChatAllNewMessage message) {
+                                      @RequestBody ChatAllNewMessage message) {
         log.info("Request get new message from user: {}", message);
+        Response response = validationMessageService.validateMessage(message);
+        if (response != null) {
+            return response;
+        }
         userService.checkUserToToken(token);
         return chatService.getAllNewMessages(message);
     }
