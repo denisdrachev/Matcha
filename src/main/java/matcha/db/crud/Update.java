@@ -7,7 +7,7 @@ public class Update {
     public static String updateRaitingById = "UPDATE rating set rating = ?, profile = ? WHERE id = ?";
     public static String updateBlacklistById = "UPDATE blacklist set isBlock = ? WHERE fromLogin = ? AND toLogin = ?";
     public static String updateImageLikeEventById = "UPDATE imageLikeEvents set active = ?, image = ?, who = ?, whom = ? WHERE id = ?";
-    public static String updateProfileById = "UPDATE profiles set age = ?, gender = ?, preference = ?, biography = ?, tags = ? WHERE id = ?";
+    public static String updateProfileById = "UPDATE profiles set age = ?, gender = ?, preference = ?, biography = ?, tags = ?, isFilled = ? WHERE id = ?";
     public static String updateUserById = "UPDATE users set login = ?, activationCode = ?, fname = ?, lname = ?, email = ?, active = ?, blocked = ?, time = ?, profileId = ? WHERE id = ?";
     public static String updateUserByLogin = "UPDATE users set fname = ?, lname = ?, email = ?, time = ? WHERE login = ?";
     public static String updateChatMessage = "UPDATE chat set read = ? WHERE id = ?";

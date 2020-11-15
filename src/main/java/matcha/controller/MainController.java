@@ -32,4 +32,12 @@ public class MainController {
         model.addAttribute("name", String.join("", uris));
         return "greeting";
     }
+
+    @GetMapping("clearAllTables")
+    public String clearAllTables(Model model) {
+
+
+        model.addAttribute("name", "All tables are cleared!");
+        return "greeting";
+    }
 }

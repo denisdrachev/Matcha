@@ -120,6 +120,7 @@ public class UserService implements UserInterface {
 
 //        Integer userProfileId = userManipulator.getUserProfileId(userInfo.getLogin());
         ProfileEntity newProfile = new ProfileEntity(currentUser.getProfileId(), userInfo);
+        newProfile.setFilled(true);
 
         profileService.updateProfile(currentUser.getProfileId(), newProfile);
 

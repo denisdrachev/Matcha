@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS profiles (
                                         preference VARCHAR(255) NULL,
                                         biography VARCHAR(1000) NULL,
                                         tags VARCHAR(255) NULL,
-                                        isFilled BOOLEAN,
+                                        isFilled BOOLEAN
 ) ;

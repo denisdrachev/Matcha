@@ -33,6 +33,7 @@ public class ProfileEntity implements Serializable {
         this.biography = userAndProfileUpdateModel.getBiography();
         this.tags = userAndProfileUpdateModel.getTags();
         this.images = userAndProfileUpdateModel.getImages();
+        this.isFilled = true;
     }
 
     public String getPreferenceAsString() {

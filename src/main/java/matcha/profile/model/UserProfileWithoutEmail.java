@@ -30,6 +30,7 @@ public class UserProfileWithoutEmail implements Serializable {
     private Date time;
     private Location location;
     private boolean isBlocked;
+    private boolean isFilled;
 
     public UserProfileWithoutEmail(UserEntity user, ProfileEntity profile, boolean isBlocked) {
         this.login = user.getLogin();
@@ -44,5 +45,6 @@ public class UserProfileWithoutEmail implements Serializable {
         this.time = user.getTime();
         this.location = user.getLocation();
         this.isBlocked = isBlocked;
+        this.isFilled = profile.isFilled();
     }
 }

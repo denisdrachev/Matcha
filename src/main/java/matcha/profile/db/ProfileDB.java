@@ -87,7 +87,7 @@ public class ProfileDB {
         try {
             int update = jdbcTemplate.update(Update.updateProfileById,
                     profile.getAge(), profile.getGender(), profile.getPreferenceAsString(),
-                    profile.getBiography(), profile.getTagsAsString(), profile.getId());
+                    profile.getBiography(), profile.getTagsAsString(), profile.isFilled(), profile.getId());
             log.info("Update profile result: {}", update);
         } catch (Exception e) {
             log.warn("Exception. updateProfileById: {}", e.getMessage());
