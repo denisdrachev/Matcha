@@ -24,7 +24,8 @@ public class ProfileController {
 
     @PostMapping(value = "profile-update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Response profileUpdate(@RequestBody UserInfoModel userProfile,
-                                  @CookieValue(value = "token") String token) {
+                                  @CookieValue(value = "token") String token
+    ) {
         log.info("Request update user profile:{} token:{}", userProfile, token);
         Response response = validationMessageService.validateMessage(userProfile);
         if (response != null) {

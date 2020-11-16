@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserProfileService implements UserProfileInterface {
 
+    //TODO РЕФАКТОРИНГ! ТУДУ ТУДУ!
+
     private UserDB userDB;
     private ProfileDB profileDB;
 

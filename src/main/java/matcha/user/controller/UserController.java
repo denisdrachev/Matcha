@@ -51,9 +51,9 @@ public class UserController {
     }
 
     @GetMapping(value = "profile-get/{login}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Response getUserProfile(@PathVariable String login) {
+    public Response getUserProfile(@RequestParam("token") String token, @PathVariable String login) {
         log.info("Request get user profile by login: {}", login);
-        UserProfileWithoutEmail userProfile = userService.getUserProfile(login);
+        UserProfileWithoutEmail userProfile = userService.getUserProfile(token, login);
         return validationMessageService.prepareMessageOkData(userProfile);
     }
 

@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class UtilsTest {
 
     @Test

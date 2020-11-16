@@ -22,4 +22,17 @@ public class EventManipulator {
     public List<Event> getAllEvents() {
         return eventDB.getAllEvents();
     }
+
+    //TODO Доделать, пока не понятно что должно быть
+    public Event getLikeEvent(String fromLogin, String toLogin) {
+//        try {
+        return eventDB.getLikeEvent(fromLogin, toLogin);
+//        } catch (Exception e) {
+//            return new Event(EventType.IMAGE_LIKE, )
+//        }
+    }
+
+    public boolean isLikeEvent(String fromLogin, String toLogin) {
+        return eventDB.isLikeEvent(fromLogin, toLogin);
+    }
 }

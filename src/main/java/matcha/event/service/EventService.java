@@ -16,11 +16,17 @@ public class EventService {
     private EventManipulator eventManipulator;
 
     public void saveEvent(Event event) {
+        if (event == null)
+            return;
         eventManipulator.insertEvent(event);
         eventUnicastService.onNext(event);
     }
 
     public List<Event> getAllEvents() {
         return eventManipulator.getAllEvents();
+    }
+
+    public boolean isLikeEvent(String fromLogin, String toLogin) {
+        return eventManipulator.isLikeEvent(fromLogin, toLogin);
     }
 }

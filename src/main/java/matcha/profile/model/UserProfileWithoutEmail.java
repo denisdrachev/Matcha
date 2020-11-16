@@ -29,18 +29,26 @@ public class UserProfileWithoutEmail implements Serializable {
     private List<Image> images;
     private Date time;
     private Location location;
+    private boolean isBlocked;
+    private boolean isFilled;
+    private boolean likedFrom;
+    private boolean likedTo;
 
-    public UserProfileWithoutEmail(UserEntity user, ProfileEntity profile) {
-        login = user.getLogin();
-        fname = user.getFname();
-        lname = user.getLname();
-        age = profile.getAge();
-        gender = profile.getGender();
-        preference = profile.getPreference();
-        biography = profile.getBiography();
-        tags = profile.getTags();
-        images = profile.getImages();
-        time = user.getTime();
-        location = user.getLocation();
+    public UserProfileWithoutEmail(UserEntity user, ProfileEntity profile, boolean isBlocked, boolean likedFrom, boolean likedTo) {
+        this.login = user.getLogin();
+        this.fname = user.getFname();
+        this.lname = user.getLname();
+        this.age = profile.getAge();
+        this.gender = profile.getGender();
+        this.preference = profile.getPreference();
+        this.biography = profile.getBiography();
+        this.tags = profile.getTags();
+        this.images = profile.getImages();
+        this.time = user.getTime();
+        this.location = user.getLocation();
+        this.isBlocked = isBlocked;
+        this.isFilled = profile.isFilled();
+        this.likedFrom = likedFrom;
+        this.likedTo = likedTo;
     }
 }

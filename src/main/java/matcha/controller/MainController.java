@@ -4,7 +4,6 @@ import matcha.properties.Gateways;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -27,9 +26,17 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String confirmRegistration(WebRequest request, Model model) {
+    public String confirmRegistration(Model model) {
         System.err.println(uris.size());
         model.addAttribute("name", String.join("", uris));
+        return "greeting";
+    }
+
+    @GetMapping("clearAllTables")
+    public String clearAllTables(Model model) {
+
+
+        model.addAttribute("name", "All tables are cleared!");
         return "greeting";
     }
 }

@@ -1,6 +1,8 @@
 package matcha.user.service;
 
 import lombok.AllArgsConstructor;
+import matcha.blacklist.model.BlackListMessage;
+import matcha.blacklist.service.BlackListService;
 import matcha.converter.Utils;
 import matcha.event.model.Event;
 import matcha.event.service.EventService;
@@ -31,6 +33,7 @@ public class UserService implements UserInterface {
     private final MailService mailService;
     private final ProfileService profileService;
     private EventService eventService;
+    private BlackListService blackListService;
 
     public void userRegistration(UserRegistry userRegistry) {
 
@@ -83,16 +86,24 @@ public class UserService implements UserInterface {
         return userManipulator.activationUserByToken(token);
     }
 
-    public UserProfileWithoutEmail getUserProfile(String login) {
+    public UserProfileWithoutEmail getUserProfile(String token, String login) {
+
+        checkUserToToken(token);
+        UserEntity userByToken = getUserByToken(token);
+
         UserEntity user = getUserByLogin(login);
         Location activeUserLocation = locationService.getLocationByUserId(user.getId());
         user.setLocation(activeUserLocation);
         ProfileEntity profileById = profileService.getProfileByIdWithImages(user.getProfileId());
+        BlackListMessage blackList = blackListService.getBlackListMessage(userByToken.getLogin(), user.getLogin());
 
         Event newEvent = new Event(EventType.PROFILE_LOAD, login, false, "");
         eventService.saveEvent(newEvent);
 
-        return new UserProfileWithoutEmail(user, profileById);
+        boolean likeEventFrom = eventService.isLikeEvent(userByToken.getLogin(), user.getLogin());
+        boolean likeEventTo = eventService.isLikeEvent(user.getLogin(), userByToken.getLogin());
+
+        return new UserProfileWithoutEmail(user, profileById, blackList.isBlocked(), likeEventFrom, likeEventTo);
     }
 
     //TODO рефакторинг
@@ -108,6 +119,7 @@ public class UserService implements UserInterface {
 
 //        Integer userProfileId = userManipulator.getUserProfileId(userInfo.getLogin());
         ProfileEntity newProfile = new ProfileEntity(currentUser.getProfileId(), userInfo);
+        newProfile.setFilled(true);
 
         profileService.updateProfile(currentUser.getProfileId(), newProfile);
 

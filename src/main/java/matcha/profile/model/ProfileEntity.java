@@ -23,6 +23,7 @@ public class ProfileEntity implements Serializable {
     private String biography;
     private List<String> tags = new ArrayList<>();
     private List<Image> images = new ArrayList<>();
+    private boolean isFilled = true;
 
     public ProfileEntity(int profileId, UserInfoModel userAndProfileUpdateModel) {
         this.id = profileId;
@@ -32,6 +33,7 @@ public class ProfileEntity implements Serializable {
         this.biography = userAndProfileUpdateModel.getBiography();
         this.tags = userAndProfileUpdateModel.getTags();
         this.images = userAndProfileUpdateModel.getImages();
+        this.isFilled = true;
     }
 
     public String getPreferenceAsString() {

@@ -22,6 +22,7 @@ public class ProfileRowMapper implements RowMapper<ProfileEntity> {
                     .map(Integer::parseInt).collect(Collectors.toList()));
         if (rs.getString("tags") != null)
             profile.setTags(Arrays.asList(rs.getString("tags").split(",")));
+        profile.setFilled(rs.getBoolean("isFilled"));
         return profile;
     }
 }

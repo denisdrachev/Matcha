@@ -1,6 +1,7 @@
-CREATE TABLE IF NOT EXISTS blacklist (
-    who INT,
-    whom INT,
-    FOREIGN KEY (who)  REFERENCES profiles (id),
-    FOREIGN KEY (whom)  REFERENCES profiles (id)
+CREATE TABLE IF NOT EXISTS blacklist(
+                                        toLogin   INT,
+                                        fromLogin INT,
+                                        isBlock   BOOLEAN,
+                                        FOREIGN KEY (toLogin) REFERENCES users (id),
+                                        FOREIGN KEY (fromLogin) REFERENCES users (id)
 ) ;

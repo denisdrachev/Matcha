@@ -1,6 +1,8 @@
 package matcha.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import matcha.converter.Converter;
 
 import java.io.Serializable;

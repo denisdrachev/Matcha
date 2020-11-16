@@ -1,5 +1,6 @@
 package matcha.reactive;
 
+import matcha.event.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +25,9 @@ public class EventGenerator {
     public void generateEvent() {
         int count = counter.getAndIncrement();
         EventSocket event = new EventSocket("event", count);
+
+        Event ev = new Event("type", "login", null, true, "ddddaaaaattttaaaa");
+        eventUnicastService.onNext(ev);
 //        eventUnicastService.onNext(event);
 //        System.err.println(event);
     }

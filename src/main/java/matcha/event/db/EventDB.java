@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import matcha.db.crud.Insert;
 import matcha.db.crud.Select;
 import matcha.event.model.Event;
+import matcha.exception.db.EventNotFoundDBException;
 import matcha.exception.db.InsertEventDBException;
 import matcha.exception.db.LoadEventsException;
 import matcha.model.rowMapper.EventRowMapper;
+import matcha.utils.EventType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -120,6 +122,33 @@ public class EventDB {
         } catch (Exception e) {
             log.warn("Exception. getAllEvents: {}", e.getMessage());
             throw new LoadEventsException();
+        }
+    }
+
+    public Event getLikeEvent(String fromLogin, String toLogin) {
+        log.info("Get Event by login: [fromLogin:{}][toLogin:{}]", fromLogin, toLogin);
+        try {
+            Event event = jdbcTemplate.queryForObject(Select.selectEventByLogin, new EventRowMapper(),
+                    EventType.IMAGE_LIKE, fromLogin, toLogin);
+            log.info("Get Event by login result: {}", event);
+            return event;
+        } catch (Exception e) {
+            log.warn("Exception. getLikeEvent: {}", e.getMessage());
+            throw new EventNotFoundDBException();
+        }
+    }
+
+    //Поиск лайка пользователя
+    public boolean isLikeEvent(String fromLogin, String toLogin) {
+        log.info("Is Like Event: [fromLogin:{}][toLogin:{}]", fromLogin, toLogin);
+        try {
+            Event event = jdbcTemplate.queryForObject(Select.selectEventByLogin, new EventRowMapper(),
+                    EventType.IMAGE_LIKE, fromLogin, toLogin);
+            log.info("Is Like Event result: {}", event);
+            return true;
+        } catch (Exception e) {
+            log.warn("Exception. isLikeEvent: {}", e.getMessage());
+            return false;
         }
     }
 }
