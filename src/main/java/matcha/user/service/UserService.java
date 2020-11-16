@@ -21,6 +21,7 @@ import matcha.user.model.UserRegistry;
 import matcha.user.model.UserUpdateEntity;
 import matcha.userprofile.model.UserInfoModel;
 import matcha.utils.EventType;
+import matcha.validator.ValidationMessageService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +35,7 @@ public class UserService implements UserInterface {
     private final ProfileService profileService;
     private EventService eventService;
     private BlackListService blackListService;
+    private ValidationMessageService validationMessageService;
 
     public void userRegistration(UserRegistry userRegistry) {
 
@@ -129,5 +131,31 @@ public class UserService implements UserInterface {
 
     public void checkUserByLoginAndActivationCode(String login, String token) {
         userManipulator.checkUserByLoginAndActivationCode(login, token);
+    }
+
+    public Response saveBlackList(String token, BlackListMessage message) {
+
+        checkUserToToken(token);
+        UserEntity userByToken = getUserByToken(token);
+        getUserByLogin(message.getToLogin());
+
+        message.setFromLogin(userByToken.getLogin());
+
+        if (blackListService.isBlackListExists(message.getFromLogin(), message.getToLogin())) {
+            blackListService.updateBlackListMessage(message);
+        } else {
+            blackListService.insertBlackListMessage(message);
+        }
+
+        String eventType;
+        if (message.isBlocked()) {
+            eventType = EventType.USER_BLOCK;
+        } else {
+            eventType = EventType.USER_UNBLOCK;
+        }
+        Event newEvent = new Event(eventType, message.getFromLogin(), true, message.getToLogin());
+        eventService.saveEvent(newEvent);
+
+        return validationMessageService.prepareMessageOkOnlyType();
     }
 }
