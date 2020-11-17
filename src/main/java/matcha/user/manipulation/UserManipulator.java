@@ -21,6 +21,7 @@ import matcha.user.model.UserUpdateEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -114,5 +115,9 @@ public class UserManipulator {
         Integer userCount = userDB.checkUserByLoginAndToken(login, token);
         if (userCount != 1)
             throw new UserNotFoundException();
+    }
+
+    public List<UserEntity> getAllUsers() {
+        return userDB.getAllUsers();
     }
 }

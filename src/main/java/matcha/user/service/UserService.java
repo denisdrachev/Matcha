@@ -24,6 +24,8 @@ import matcha.utils.EventType;
 import matcha.validator.ValidationMessageService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class UserService implements UserInterface {
@@ -157,5 +159,9 @@ public class UserService implements UserInterface {
         eventService.saveEvent(newEvent);
 
         return validationMessageService.prepareMessageOkOnlyType();
+    }
+
+    public List<UserEntity> getAllUsers() {
+        return userManipulator.getAllUsers();
     }
 }

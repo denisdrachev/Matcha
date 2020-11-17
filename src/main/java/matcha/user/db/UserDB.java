@@ -10,6 +10,7 @@ import matcha.exception.db.DropUserByLoginDBException;
 import matcha.exception.db.GetUserCountByLoginDBException;
 import matcha.exception.db.GetUserProfileIdByLoginDBException;
 import matcha.exception.db.UpdateUserByIdDBException;
+import matcha.exception.db.location.GetLocationsException;
 import matcha.exception.service.UserRegistryException;
 import matcha.exception.user.UserAuthException;
 import matcha.exception.user.UserLoginException;
@@ -28,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -187,6 +189,18 @@ public class UserDB {
         } catch (Exception e) {
             log.warn("Exception. getUserProfileIdByLogin: {}", e.getMessage());
             throw new GetUserProfileIdByLoginDBException();
+        }
+    }
+
+    public List<UserEntity> getAllUsers() {
+        log.info("Get all users");
+        try {
+            List<UserEntity> query = jdbcTemplate.query(Select.selectUsers, new UserRowMapper());
+            log.info("Get all users result count: {}", query.size());
+            return query;
+        } catch (Exception e) {
+            log.warn("Exception. getLocations: {}", e.getMessage());
+            throw new GetLocationsException();
         }
     }
 }

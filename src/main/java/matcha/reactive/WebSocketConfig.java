@@ -3,9 +3,6 @@ package matcha.reactive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.HandlerAdapter;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
@@ -38,7 +35,7 @@ public class WebSocketConfig {
 //        return new CorsWebFilter(exchange -> new CorsConfiguration().applyPermitDefaultValues());
 //    }
 
-    @Bean
+    /*@Bean
     CorsWebFilter corsFilter() {
 
         CorsConfiguration config = new CorsConfiguration();
@@ -56,7 +53,7 @@ public class WebSocketConfig {
         source.registerCorsConfiguration("/**", config);
 
         return new CorsWebFilter(source);
-    }
+    }*/
 
     @Bean
     public HandlerAdapter wsHandlerAdapter() {
